@@ -13,8 +13,10 @@ function Home() {
 
   return (
     <div className="home">
-      <div className="section1">
-        <h1 className="title">MOMENTUM</h1>
+      <div className="div1">
+        <h1 className="title" style={{ animation: "fade-in 1s ease-in-out" }}>
+          MOMENTUM
+        </h1>
         <p className="text">
           <span style={{ fontWeight: "bold" }}>Never </span>has it been so easy
           to achieve your goals

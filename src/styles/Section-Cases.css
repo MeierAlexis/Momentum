@@ -1,0 +1,52 @@
+.section-cases {
+  background: linear-gradient(#292929, #111);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  padding-bottom: 80px;
+}
+.section-cases-words {
+  max-width: 50%;
+  margin-top: 20px;
+  font-style: italic;
+  font-size: 22px;
+  opacity: 0.8;
+  margin-bottom: 30px;
+  text-align: center;
+  letter-spacing: 0.5px;
+  word-spacing: 0.5px;
+  margin-left: 10px;
+  margin-right: 10px;
+  color: #fff;
+}
+
+.testimonial {
+  margin-top: 50px;
+  max-width: 50%;
+  font-size: 37px;
+  margin-bottom: 30px;
+  text-align: center;
+  letter-spacing: 0.5px;
+  word-spacing: 0.5px;
+  font-weight: 600;
+  margin-left: 10px;
+  font-family: "Poppins", sans-serif;
+  margin-right: 10px;
+  color: #fff;
+}
+
+.name-testimonial {
+  font-size: 30px;
+  margin-bottom: 30px;
+  text-align: center;
+  letter-spacing: 0.5px;
+  word-spacing: 0.5px;
+  font-family: "Poppins", sans-serif;
+  margin-left: 10px;
+  font-weight: 400;
+  margin-right: 10px;
+  color: #fff;
+}

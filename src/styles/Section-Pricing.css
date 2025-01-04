@@ -1,0 +1,25 @@
+.section-pricing .cards-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-bottom: 90px;
+  margin-top: 40px;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.section-pricing {
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+.section-pricing .title {
+  font-size: 100px;
+  margin-bottom: 80px;
+}

@@ -1,0 +1,143 @@
+.pricing-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  background-color: #222;
+  border-radius: 30px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  margin: 10px;
+  min-width: 500px;
+  min-height: 765px;
+  max-width: 500px;
+  color: #fff;
+  border: 2px solid #444;
+}
+.pricing-card:hover {
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+  transition: all 0.4s ease-in-out;
+  scale: 1.01;
+}
+.pricing-card-container-pricing .popular {
+  font-size: 18px;
+  font-style: italic;
+  color: #fff;
+  opacity: 0.8;
+  text-align: left;
+  margin-left: 10px;
+}
+.pricing-card-container-features {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding-left: 20px;
+  width: 100%;
+  margin-right: 5px;
+  color: #fff;
+  text-align: left;
+  align-items: flex-start;
+}
+
+.pricing-card-container-features .feature {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-right: 15px;
+  margin-bottom: 10px;
+}
+
+.pricing-card-container-features .feature p {
+  font-size: 22px;
+  margin-left: 5px;
+  margin-right: 5px;
+  padding-top: 5px;
+}
+
+.pricing-card-container-titles {
+  margin-bottom: 10px;
+  margin-left: 5px;
+  width: 100%;
+  margin-right: 5px;
+  color: #fff;
+  border-bottom: #444 solid 1px;
+}
+.pricing-card-container-titles .title {
+  font-size: 35px;
+  margin-bottom: 10px;
+  text-align: left;
+  letter-spacing: 0.5px;
+  word-spacing: 0.5px;
+  margin-left: 5px;
+  margin-right: 5px;
+  color: #fff;
+}
+.pricing-card-container-titles .text {
+  font-size: 18px;
+  margin-bottom: 10px;
+  text-align: left;
+  letter-spacing: 0.5px;
+  word-spacing: 0.5px;
+  margin-left: 5px;
+  margin-right: 5px;
+  color: #fff;
+}
+.pricing-card-container-pricing button {
+  margin-top: 10px;
+  width: 100%;
+  margin-bottom: 10px;
+}
+.pricing-card-container-pricing .pricing {
+  font-size: 40px;
+  margin-bottom: 10px;
+  text-align: left;
+  letter-spacing: 0.5px;
+  word-spacing: 0.5px;
+  margin-left: 5px;
+  margin-right: 5px;
+  color: #888;
+}
+.pricing-card-container-pricing .pricing span {
+  font-size: 50px;
+  color: #fff;
+}
+.pricing-card-container-features .feature span {
+  font-size: 25px;
+  text-align: left;
+  letter-spacing: 0.5px;
+  word-spacing: 0.5px;
+  margin-left: 5px;
+  margin-right: 5px;
+  padding-bottom: 10px;
+  color: #fff;
+}
+.pricing-card-container-pricing {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+  width: 100%;
+  margin-bottom: 20px;
+  letter-spacing: 0.5px;
+  word-spacing: 0.5px;
+  margin-left: 5px;
+  margin-right: 5px;
+  color: #fff;
+  border-bottom: #444 solid 1px;
+}
+.pricing-card-container-features {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  letter-spacing: 0.5px;
+  word-spacing: 0.5px;
+  padding-left: 20px;
+  width: 100%;
+  min-height: 300px;
+  margin-right: 5px;
+  color: #fff;
+  text-align: left;
+  align-items: flex-start;
+}

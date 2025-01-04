@@ -1,9 +1,9 @@
-import "../styles/Section1.css";
+import "../styles/Section-Features.css";
 import Card from "../components/Card";
 
-function Section1() {
+function SectionFeatures() {
   return (
-    <div className="section1">
+    <div className="section-features">
       <h1 className="title">
         <span style={{ fontWeight: "bold" }}>How it</span> Works
       </h1>
@@ -43,4 +43,4 @@ function Section1() {
   );
 }
 
-export default Section1;
+export default SectionFeatures;

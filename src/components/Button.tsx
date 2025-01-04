@@ -2,11 +2,20 @@ import "../styles/Button.css";
 
 interface ButtonProps {
   text: string;
+  color1?: string;
+  color2?: string;
 }
 
 function Button(props: ButtonProps) {
-  const { text } = props;
-  return <button className="button">{text}</button>;
+  const { text, color1, color2 } = props;
+  return (
+    <button
+      className="button"
+      style={{ background: `linear-gradient(145deg, ${color1}, ${color2})` }}
+    >
+      {text}
+    </button>
+  );
 }
 
 export default Button;

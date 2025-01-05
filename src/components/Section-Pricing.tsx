@@ -35,7 +35,7 @@ function SectionPricing() {
           width="500px"
           height="800px"
           ColorBackground2="#FF5733"
-          ColorBackground1="#333333"
+          ColorBackground1="#222"
           BorderColor="#444444"
           color1="#FF5733"
           color2="#FF1044"

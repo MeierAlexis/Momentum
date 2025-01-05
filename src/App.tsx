@@ -4,6 +4,7 @@ import Home from "./components/Home.tsx";
 import SectionFeatures from "./components/Section-Features";
 import SectionCases from "./components/Section-Cases";
 import SectionPricing from "./components/Section-Pricing";
+import SectionQA from "./components/Section-QA";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <SectionFeatures />
       <SectionCases />
       <SectionPricing />
+      <SectionQA />
     </div>
   );
 }

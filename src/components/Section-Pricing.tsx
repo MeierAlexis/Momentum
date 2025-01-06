@@ -3,7 +3,7 @@ import PricingCard from "../components/Princing-Card";
 
 function SectionPricing() {
   return (
-    <div className="section-pricing">
+    <div className="section-pricing" id="Pricing">
       <h1 className="title">Simple Pricing Plans</h1>
       <div className="cards-container">
         |

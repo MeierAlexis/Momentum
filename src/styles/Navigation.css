@@ -7,12 +7,12 @@
   color: #fff;
 }
 
-.navigation a:hover {
+.navLink:hover {
   opacity: 1;
   text-decoration: underline;
 }
 
-.navigation a {
+.navLink {
   margin-right: 30px;
   text-decoration: none;
   color: #fff;

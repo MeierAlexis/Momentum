@@ -3,7 +3,7 @@ import Card from "../components/Card";
 
 function SectionFeatures() {
   return (
-    <div className="section-features">
+    <div className="section-features" id="Features">
       <h1 className="title">
         <span style={{ fontWeight: "bold" }}>How it</span> Works
       </h1>

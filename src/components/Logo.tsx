@@ -1,6 +1,11 @@
-function Logo() {
+interface LogoProps {
+  onClick?: () => void;
+}
+
+function Logo(props: LogoProps) {
   return (
     <img
+      onClick={props.onClick}
       src="/MomentumLogo.webp"
       alt="logo"
       className="logo"

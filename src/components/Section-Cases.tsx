@@ -2,7 +2,7 @@ import "../styles/Section-Cases.css";
 
 function SectionCases() {
   return (
-    <div className="section-cases">
+    <div className="section-cases" id="Cases">
       <h1 className="title">
         <span style={{ fontWeight: "bold" }}>What</span> People Say
       </h1>

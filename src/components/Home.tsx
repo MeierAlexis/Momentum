@@ -1,35 +1,21 @@
-import "../styles/Home.css";
-import Lottie from "react-lottie-player";
-import { useState } from "react";
-import animationData from "../../public/New-Year.json";
-import GlowingButton from "./GlowingButton";
+import Header from "../components/Header";
+import SectionHome from "../components/Section-Home";
+import SectionFeatures from "../components/Section-Features";
+import SectionCases from "../components/Section-Cases";
+import SectionPricing from "../components/Section-Pricing";
+import SectionQA from "../components/Section-QA";
+import SectionFooter from "../components/Section-Footer";
 
-function Home() {
-  const [isStopped, setIsStopped] = useState(false);
-
-  const handleComplete = () => {
-    setIsStopped(true); // Stop the animation when it completes
-  };
-
+export default function Home() {
   return (
-    <div className="home">
-      <div className="div1">
-        <h1 className="title">MOMENTUM</h1>
-        <p className="text">
-          <span style={{ fontWeight: "bold" }}>Never </span>has it been so easy
-          to achieve your goals
-        </p>
-        <GlowingButton text="TRY IT NOW" />
-      </div>
-      <Lottie
-        animationData={animationData}
-        loop={false}
-        play={!isStopped}
-        style={{ width: 600, height: 600 }}
-        onComplete={handleComplete}
-      />
+    <div className="App">
+      <Header />
+      <SectionHome />
+      <SectionFeatures />
+      <SectionCases />
+      <SectionPricing />
+      <SectionQA />
+      <SectionFooter />
     </div>
   );
 }
-
-export default Home;

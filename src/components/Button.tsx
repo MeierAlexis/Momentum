@@ -9,6 +9,7 @@ interface ButtonProps {
   icon?: React.ReactNode; // Nueva propiedad para el ícono
   colorText?: string;
   width?: string;
+  srcsvg?: string;
 }
 
 function Button(props: ButtonProps) {
@@ -20,6 +21,7 @@ function Button(props: ButtonProps) {
     icon,
     onClick,
     width,
+    srcsvg,
   } = props; // Colores por defecto
 
   return (
@@ -33,6 +35,7 @@ function Button(props: ButtonProps) {
       onClick={onClick}
     >
       {icon && <span className="button-icon">{icon}</span>}{" "}
+      {srcsvg && <img src={srcsvg} alt="icon" className="button-icon" />}
       {/* Renderizar el ícono si existe */}
       {text && <span className="button-text">{text}</span>}
     </button>

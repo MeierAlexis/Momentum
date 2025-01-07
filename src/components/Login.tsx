@@ -3,6 +3,7 @@ import "../styles/Login.css";
 import { faUser, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import Button from "./Button";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -10,7 +11,11 @@ export default function Login() {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+  const navigate = useNavigate();
 
+  const handleSignUpClick = () => {
+    navigate("/register");
+  };
   return (
     <div className="Login">
       <div className="headerLogin">
@@ -71,7 +76,10 @@ export default function Login() {
           </div>
         </form>
         <p>
-          Don't have an account? <a href="/register">Sign Up</a>
+          Don't have an account?{" "}
+          <a onClick={handleSignUpClick} className="loginLink">
+            Sign Up
+          </a>
         </p>
       </div>
     </div>

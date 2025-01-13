@@ -35,7 +35,7 @@ export const registerSchema = z
             "The password must include at least one uppercase letter, one lowercase letter, one number, and one special character",
         }
       ),
-    confirmpassword: z
+    confirmPassword: z
       .string({ message: "The confirmation password is required" })
       .min(8, {
         message:
@@ -46,14 +46,12 @@ export const registerSchema = z
           "The confirmation password can't have more than 255 characters",
       }),
   })
-  .refine((data) => data.password === data.confirmpassword, {
+  .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords must match",
     path: ["confirmpassword"], // Especifica el error en confirmpassword
   });
 
 export const loginSchema = z.object({
-  email: z.string({ message: "The email or password are not correct" }).email(),
-  password: z
-    .string({ message: "The email or password are not correct" })
-    .min(8),
+  email: z.string({ message: "The email is not correct" }).email().trim(),
+  password: z.string({ message: "The password is not correct" }).min(8).trim(),
 });

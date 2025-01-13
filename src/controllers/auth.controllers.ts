@@ -1,16 +1,15 @@
 import { pool } from "../db.ts";
-import bcrypt from "bcrypt";
 import crypto from "node:crypto";
 import { createAccessToken } from "../libs/jwt.ts";
+import bcrypt from "bcrypt";
 
 interface UserRegister {
-  id: string;
   name: string;
   username: string;
   email: string;
   password: string;
   lastname: string;
-  confirmpassword: string;
+  confirmPassword: string;
 }
 
 interface UserLogin {
@@ -20,7 +19,7 @@ interface UserLogin {
 
 export const loginUser = async (req, res) => {
   const { email, password }: UserLogin = req.body;
-
+  console.log(req.body);
   const email_lower = email.toLowerCase();
   try {
     // Find user by email
@@ -42,7 +41,7 @@ export const loginUser = async (req, res) => {
     if (!isPasswordValid) {
       return res.status(401).json({
         success: false,
-        message: "Invalid email or password",
+        message: "Invalid Password",
       });
     }
 
@@ -62,7 +61,6 @@ export const loginUser = async (req, res) => {
       email: user.email,
     });
   } catch (error) {
-    console.error("Error in loginUser:", error);
     res.status(500).json({
       success: false,
       message: "Internal server error",
@@ -77,19 +75,37 @@ export const registerUser = async (req, res) => {
     username,
     email,
     password,
-    confirmpassword,
+    confirmPassword,
   }: UserRegister = req.body;
 
-  if (password !== confirmpassword) {
+  if (password !== confirmPassword) {
     return res.status(400).json({
-      success: false,
-      message: "Passwords do not match",
+      message: ["Passwords do not match"],
     });
   }
 
   const email_lower = email.toLowerCase();
 
   try {
+    const userFound = await pool.query("SELECT * FROM users WHERE email = $1", [
+      email_lower,
+    ]);
+
+    if (userFound.rowCount > 0) {
+      return res.status(400).json({
+        message: ["User email already exists"],
+      });
+    }
+    const usernameFound = await pool.query(
+      "SELECT * FROM users WHERE username = $1",
+      [username]
+    );
+
+    if (usernameFound.rowCount > 0) {
+      return res.status(400).json({
+        message: ["Username already exists"],
+      });
+    }
     const passwordHash = await bcrypt.hash(password, 12);
     const id = crypto.randomUUID();
 
@@ -106,7 +122,7 @@ export const registerUser = async (req, res) => {
       httpOnly: true,
       secure: true,
       sameSite: "none",
-      maxAge: 1000 * 60 * 60, // 1 hora
+      maxAge: 1000 * 60 * 60, // 1 hour
     });
 
     res.status(200).json({
@@ -115,7 +131,6 @@ export const registerUser = async (req, res) => {
       user: result.rows[0],
     });
   } catch (error) {
-    console.error("Error in registerUser:", error);
     res.status(500).json({
       success: false,
       message: "Internal server error",
@@ -162,7 +177,6 @@ export const profileUser = async (req, res) => {
       lastname: user.lastname,
     });
   } catch (error) {
-    console.error("Error in profileUser:", error);
     return res.status(500).json({
       success: false,
       message: "Internal server error",

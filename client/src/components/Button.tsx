@@ -33,6 +33,7 @@ function Button(props: ButtonProps) {
         width: width,
       }}
       onClick={onClick}
+      type="submit"
     >
       {icon && <span className="button-icon">{icon}</span>}{" "}
       {srcsvg && <img src={srcsvg} alt="icon" className="button-icon" />}

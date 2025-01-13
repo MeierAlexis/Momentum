@@ -1,21 +1,41 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "../styles/Login.css";
 import { faUser, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-import Button from "./Button";
-import { useState } from "react";
+import Button from "../components/Button";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { UserLogin } from "../interfaces/auth";
+import { useAuth } from "../context/AuthContext.tsx";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
+  const { login, errors: LoginErrors, isAuthenticated } = useAuth();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/dashboard");
+    }
+  }, [isAuthenticated, navigate]);
+
   const handleSignUpClick = () => {
     navigate("/register");
   };
+
+  const onSubmit = async (data: UserLogin) => {
+    login(data);
+  };
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<UserLogin>();
   return (
     <div className="Login">
       <div className="headerLogin">
@@ -25,13 +45,27 @@ export default function Login() {
         <FontAwesomeIcon icon={faUser} size="2x" className="icon" />
         <h2>Log in to your account</h2>
         <p className="subtitle">Reach your goals with Momentum</p>
-        <form>
-          <input type="text" placeholder="Email" />
+        {LoginErrors.map((error, index) => (
+          <p key={index} className="error">
+            {error}
+          </p>
+        ))}
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <input
+            type="text"
+            placeholder="Email"
+            {...register("email", { required: "Email is required" })}
+          />
+
+          {errors.email && <p>"Email is required"</p>}
           <div className="password-container">
             <input
               type={showPassword ? "text" : "password"}
               placeholder="Password"
+              {...register("password", { required: "Password is required" })}
             />
+
+            {errors.password && <p>"Password is required"</p>}
             <FontAwesomeIcon
               icon={showPassword ? faEyeSlash : faEye}
               onClick={togglePasswordVisibility}

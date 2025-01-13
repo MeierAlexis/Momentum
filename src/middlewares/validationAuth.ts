@@ -1,39 +1,43 @@
 import { registerSchema, loginSchema } from "../schemas/authSchema.ts";
-
 import z from "zod";
 
 export const validateRegister = (req, res, next) => {
   try {
     // Validate the request body with zod
     registerSchema.parse(req.body);
-    next(); //if it is valid, go to the next
+    next(); // If it is valid, go to the next middleware
   } catch (error) {
     if (error instanceof z.ZodError) {
+      const errorMessage = error.issues.map((issue) => issue.message);
       return res.status(400).json({
-        error: error.issues,
-        sucess: false,
-        message: "Validation of register failed",
+        success: false,
+        message: errorMessage,
       });
     }
-    res.status(500).json({ success: false, message: "Internal server error" });
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
   }
 };
 
 export const validateLogin = (req, res, next) => {
   try {
-    //validate body request
+    console.log(req.body);
+    // Validate body request
     loginSchema.parse(req.body);
-    next();
+    next(); // If valid, proceed to the next middleware
   } catch (error) {
     if (error instanceof z.ZodError) {
+      const errorMessage = error.issues.map((issue) => issue.message);
       return res.status(400).json({
-        error: error.issues,
         success: false,
-        message: "Validation of Login failed",
+        message: errorMessage,
       });
-      res
-        .status(500)
-        .json({ success: false, message: "Internal server error" });
     }
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
   }
 };

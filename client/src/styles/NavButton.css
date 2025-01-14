@@ -1,0 +1,43 @@
+.Navbutton {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+
+  width: 100%;
+  border: none;
+  background-color: #191919;
+  color: #fff;
+  transition: background-color 0.3s ease-in-out;
+  font-family: "Poppins", sans-serif;
+  font-size: 22px;
+  cursor: pointer;
+  gap: 50px;
+  text-align: left;
+}
+
+.Navbutton:hover {
+  background: linear-gradient(145deg, #4444, #292929);
+}
+
+.Navbutton .buttonnav-icon {
+  margin-left: 30px;
+  height: 100%;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+}
+.Navbutton .buttonnav-icon svg {
+  width: 30px;
+  height: 25px;
+  padding: 10px;
+}
+
+.Navbutton .buttonav-text {
+  padding-top: 25px;
+  padding-bottom: 25px;
+}
+
+.Navbutton.selected {
+  background: linear-gradient(145deg, #4444, #292929);
+}

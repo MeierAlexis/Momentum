@@ -1,0 +1,38 @@
+.Dashboard {
+  display: flex;
+  flex-direction: row;
+  padding: 0px;
+  height: 100vh;
+  background: #111;
+  font-family: "Montserrat", sans-serif;
+  align-items: center;
+  justify-content: flex-start;
+  color: #fff;
+}
+
+.Dashboard img {
+  padding: auto;
+  margin-bottom: 200px;
+  margin-top: 30px;
+}
+
+.SideBar {
+  display: flex;
+  flex-direction: column;
+  padding: 0px;
+  width: 300px;
+  height: 100vh;
+
+  background: #191919;
+  font-family: "Montserrat", sans-serif;
+  align-items: center;
+  box-shadow: 1px 1px 10px rgba(255, 255, 255, 0.1);
+}
+
+.ButtonsNav {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: auto;
+}

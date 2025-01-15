@@ -1,7 +1,7 @@
 .Dashboard {
   display: flex;
   flex-direction: row;
-  padding: 0px;
+  padding: 0;
   height: 100vh;
   background: #111;
   font-family: "Montserrat", sans-serif;
@@ -11,22 +11,38 @@
 }
 
 .Dashboard img {
-  padding: auto;
-  margin-bottom: 200px;
-  margin-top: 30px;
+  margin: 30px auto 200px auto; /* Centrado vertical con margenes */
 }
 
 .SideBar {
   display: flex;
   flex-direction: column;
-  padding: 0px;
+  padding: 0;
   width: 300px;
   height: 100vh;
-
   background: #191919;
-  font-family: "Montserrat", sans-serif;
+  font-family: "Poppins", sans-serif;
   align-items: center;
   box-shadow: 1px 1px 10px rgba(255, 255, 255, 0.1);
+}
+
+.SquareDashboard {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  height: 35vh;
+  margin-left: 50px;
+  background: #191919;
+  font-family: "Poppins", sans-serif;
+  box-shadow: 1px 1px 10px rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  color: #666;
+}
+
+.SquareDashboard h2 {
+  text-align: left;
+  margin: 20px 0;
+  padding-left: 40px;
 }
 
 .ButtonsNav {
@@ -35,4 +51,53 @@
   flex-direction: column;
   justify-content: center;
   margin-bottom: auto;
+}
+
+.Analytics {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.Analytics h1 {
+  text-align: left;
+  margin: 40px 0 60px 80px;
+}
+
+.AnalyticsContainer1,
+.AnalyticsContainer2 {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin: 10px;
+}
+
+.AnalyticsContainer1 .SquareDashboard,
+.AnalyticsContainer2 .SquareDashboard {
+  display: flex;
+
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.AnalyticsContainer2 .GoalList {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  width: 100%;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  font-size: 25px;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  text-decoration: none;
+  height: 100%;
+  overflow: scroll;
+}
+
+.AnalyticsContainer2 .GoalList::-webkit-scrollbar {
+  width: 10px;
 }

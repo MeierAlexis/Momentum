@@ -5,12 +5,30 @@ import {
   faBullseye,
   faGear,
   faHome,
+  faMap,
   faQuestion,
   faRightFromBracket,
-  faUser,
 } from "@fortawesome/free-solid-svg-icons";
+import { ChartProgression } from "../components/ChartProgression.tsx";
+import { CustomPieChart } from "../components/CustomPieChart.tsx";
 
 export function Dashboard() {
+  const initialData = [
+    { date: "2023-01-01", completed: 5 },
+    { date: "2023-01-02", completed: 4 },
+    { date: "2023-01-03", completed: 4 },
+    { date: "2023-01-04", completed: 5 },
+    { date: "2023-01-05", completed: 3 },
+    { date: "2023-01-06", completed: 4 },
+    { date: "2023-01-07", completed: 4 },
+  ];
+
+  const data = [
+    { name: "Group A", value: 400 },
+    { name: "Group B", value: 300 },
+    { name: "Group C", value: 300 },
+    { name: "Group D", value: 200 },
+  ];
   return (
     <div className="Dashboard">
       <div className="SideBar">
@@ -28,7 +46,7 @@ export function Dashboard() {
             isSelected
           />
           <NavButton
-            text="Analytics"
+            text="Goals"
             colorText="white"
             width="100%"
             icon={<FontAwesomeIcon icon={faBullseye} size="lg" />}
@@ -41,10 +59,10 @@ export function Dashboard() {
           />
 
           <NavButton
-            text="Profile"
+            text="Tracker"
             colorText="white"
             width="100%"
-            icon={<FontAwesomeIcon icon={faUser} size="lg" />}
+            icon={<FontAwesomeIcon icon={faMap} size="lg" />}
           />
           <NavButton
             text="Help"
@@ -63,6 +81,29 @@ export function Dashboard() {
 
       <div className="Analytics">
         <h1>Hi {sessionStorage.getItem("name")}</h1>
+        <div className="AnalyticsContainer1">
+          <div className="SquareDashboard WeeklyProgress">
+            <h2>Weekly Progress</h2>
+            <ChartProgression data={initialData} />
+          </div>
+        </div>
+        <div className="AnalyticsContainer2">
+          <div className="SquareDashboard ViewActiveGoals">
+            <h2>Active Goals</h2>
+            <ul className="GoalList">
+              <li className="Goal">Goal 1</li>
+              <li className="Goal">Goal 2</li>
+              <li className="Goal">Goal 3</li>
+            </ul>
+          </div>
+          <div className="SquareDashboard ViewHabitTracker">
+            <h2>Habit Tracker</h2>
+          </div>
+          <div className="SquareDashboard ViewWheelofLife">
+            <h2>Wheel of Life</h2>
+            <CustomPieChart data={data} />
+          </div>
+        </div>
       </div>
     </div>
   );

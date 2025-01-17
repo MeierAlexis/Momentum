@@ -1,30 +1,46 @@
 import React from "react";
 import {
-  LineChart,
-  Line,
+  AreaChart,
+  Area,
   XAxis,
   YAxis,
   Tooltip,
-  Legend,
   ResponsiveContainer,
 } from "recharts";
 
-// Definimos el tipo de cada punto de datos
 type DataPoint = {
   date: string;
   completed: number;
 };
 
-// Definimos las props que el componente acepta
-interface LineChartExampleProps {
+interface AreaChartExampleProps {
   data: DataPoint[];
+  view: string;
+  onButtonClick: (action: string) => void; // Callback para manejar clics en los botones
 }
 
-export const ChartProgression: React.FC<LineChartExampleProps> = ({ data }) => {
+export const ChartProgression: React.FC<AreaChartExampleProps> = ({
+  data,
+  onButtonClick,
+  view,
+}) => {
   return (
-    <div style={{ width: "100%", height: 250 }}>
+    <div style={{ width: "100%", height: 300, position: "relative" }}>
+      <div style={{ position: "absolute", top: 10, right: 10, zIndex: 10 }}>
+        <button
+          onClick={() => onButtonClick("day")}
+          style={{
+            marginRight: 10,
+            background: "#333",
+            border: "1px solid #fff",
+            color: "#fff",
+          }}
+        >
+          {view}
+        </button>
+      </div>
       <ResponsiveContainer>
-        <LineChart
+        <AreaChart
           data={data}
           margin={{
             top: 5,
@@ -36,15 +52,16 @@ export const ChartProgression: React.FC<LineChartExampleProps> = ({ data }) => {
           <XAxis dataKey="date" tickMargin={10} />
           <YAxis tickMargin={10} />
           <Tooltip />
-          <Legend />
-          <Line
+          <Area
             type="natural"
             dataKey="completed"
             stroke="#ff5733"
-            strokeWidth={2}
+            fill="rgba(255, 87, 51, 0.1)"
+            strokeWidth={3}
             activeDot={{ r: 10 }}
+            dot={true}
           />
-        </LineChart>
+        </AreaChart>
       </ResponsiveContainer>
     </div>
   );

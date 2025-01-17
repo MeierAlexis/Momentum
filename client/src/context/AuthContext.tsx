@@ -1,6 +1,7 @@
-import { createContext, useState, useContext } from "react";
-import { registerRequest, loginRequest } from "../api/auth";
+import { createContext, useState, useContext, useEffect } from "react";
+import { registerRequest, loginRequest, verifyTokenRequest } from "../api/auth";
 import { UserRegister, UserLogin } from "../interfaces/auth";
+import Cookie from "js-cookie";
 
 // Define la forma del contexto
 interface AuthContextType {
@@ -64,6 +65,35 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       throw error;
     }
   };
+
+  useEffect(() => {
+    if (errors.length > 0) {
+      const timer = setTimeout(() => setErrors([]), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [errors]);
+
+  useEffect(() => {
+    async function CheckLogin() {
+      const cookies = Cookie.get();
+      if (cookies.token) {
+        try {
+          const res = await verifyTokenRequest(cookies.token);
+          console.log(res);
+          if (!res.data) {
+            setIsAuthenticated(false);
+          } else {
+            setUser(res.data);
+          }
+        } catch (error: any) {
+          setIsAuthenticated(false);
+          setUser(null);
+        }
+      }
+    }
+
+    CheckLogin();
+  }, []);
   return (
     <AuthContext.Provider
       value={{ user, signup, isAuthenticated, errors, login }}

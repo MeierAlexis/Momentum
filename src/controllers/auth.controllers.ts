@@ -2,6 +2,8 @@ import { pool } from "../db.ts";
 import crypto from "node:crypto";
 import { createAccessToken } from "../libs/jwt.ts";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import { JWT_SECRET } from "../config.ts";
 
 interface UserRegister {
   name: string;
@@ -19,7 +21,6 @@ interface UserLogin {
 
 export const loginUser = async (req, res) => {
   const { email, password }: UserLogin = req.body;
-  console.log(req.body);
   const email_lower = email.toLowerCase();
   try {
     // Find user by email
@@ -48,11 +49,7 @@ export const loginUser = async (req, res) => {
     // Create access token
     const token = await createAccessToken({ id: user.id });
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-    });
+    res.cookie("token", token);
 
     res.status(200).json({
       success: true,
@@ -182,4 +179,47 @@ export const profileUser = async (req, res) => {
       message: "Internal server error",
     });
   }
+};
+
+export const verifyToken = async (req, res) => {
+  // get token
+  const { token } = req.cookies;
+  if (!token) {
+    res.status(401).json({ message: "Unauthorized" });
+  }
+
+  // verify token
+  jwt.verify(token, JWT_SECRET, async (err, decoded) => {
+    if (err) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized: Invalid token",
+      });
+    }
+
+    // recover user from token
+    const AuthenticatedUser = await pool.query(
+      "SELECT * FROM users WHERE id = $1",
+      [decoded.id]
+    );
+
+    // token valid, but user not found
+    if (!AuthenticatedUser.rows[0]) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized: User not found",
+      });
+    }
+
+    const user = AuthenticatedUser.rows[0];
+    console.log(user);
+
+    // responde user
+    return res.status(200).json({
+      id: AuthenticatedUser.rows[0].id,
+      firstName: AuthenticatedUser.rows[0].name,
+      lastName: AuthenticatedUser.rows[0].lastname,
+      email: AuthenticatedUser.rows[0].email,
+    });
+  });
 };

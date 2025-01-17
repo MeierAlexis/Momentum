@@ -1,7 +1,7 @@
 import "../styles/Header.css";
 import Logo from "./Logo";
 import Navigation from "./Navigation";
-import Button from "../components/Button";
+import Button from "./Button";
 import { useNavigate } from "react-router-dom";
 
 const Header = () => {

@@ -1,19 +1,29 @@
 .Dashboard {
   display: flex;
   flex-direction: row;
-  padding: 0;
   height: 100vh;
   background: #111;
   font-family: "Montserrat", sans-serif;
-  align-items: center;
-  justify-content: flex-start;
+  align-items: stretch;
+  justify-content: space-between;
   color: #fff;
+  overflow: hidden;
+  gap: 30px;
+  padding-right: 30px;
+}
+
+.DashboardHeader {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 5vh;
 }
 
 .Dashboard img {
-  margin: 30px auto 200px auto; /* Centrado vertical con margenes */
+  margin: 80px auto;
 }
-
 .SideBar {
   display: flex;
   flex-direction: column;
@@ -29,20 +39,12 @@
 .SquareDashboard {
   display: flex;
   flex-direction: column;
-  padding: 0;
-  height: 35vh;
-  margin-left: 50px;
   background: #191919;
   font-family: "Poppins", sans-serif;
   box-shadow: 1px 1px 10px rgba(255, 255, 255, 0.1);
   border-radius: 20px;
-  color: #666;
-}
-
-.SquareDashboard h2 {
-  text-align: left;
-  margin: 20px 0;
-  padding-left: 40px;
+  padding: 20px;
+  flex: 1;
 }
 
 .ButtonsNav {
@@ -51,53 +53,183 @@
   flex-direction: column;
   justify-content: center;
   margin-bottom: auto;
+  align-items: center;
+  gap: 15px;
 }
 
 .Analytics {
-  width: 100%;
   display: flex;
   flex-direction: column;
+  width: 100%;
   height: 100%;
+  gap: 30px;
 }
-
-.Analytics h1 {
-  text-align: left;
-  margin: 40px 0 60px 80px;
-}
-
-.AnalyticsContainer1,
 .AnalyticsContainer2 {
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
-  margin: 10px;
+  height: 45vh;
+  gap: 30px;
 }
 
-.AnalyticsContainer1 .SquareDashboard,
-.AnalyticsContainer2 .SquareDashboard {
-  display: flex;
-
-  width: 100%;
-  margin-bottom: 20px;
+.AnalyticsContainer3 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 30px;
+  width: 33%;
+  height: 100%;
 }
 
-.AnalyticsContainer2 .GoalList {
+.AnalyticsContainer3 h2 {
+  text-align: left;
+  font-size: 22px;
+  color: #bbb;
+}
+
+.ViewActiveGoals,
+.ViewHabitTracker {
   display: flex;
   flex-direction: column;
-  gap: 30px;
-  width: 100%;
-  margin-bottom: 20px;
-  border-radius: 10px;
-  font-size: 25px;
-  justify-content: center;
-  align-items: center;
-  color: #fff;
-  text-decoration: none;
+  gap: 20px;
   height: 100%;
-  overflow: scroll;
+  overflow-y: auto;
+  overflow-x: none;
+  padding: 20px;
 }
 
-.AnalyticsContainer2 .GoalList::-webkit-scrollbar {
-  width: 10px;
+.ViewCompletedGoals p,
+.StreakHabits p,
+.FailedHabits p {
+  font-size: 70px;
+  color: #fff;
+  margin-top: 10px;
+}
+
+.ViewWheelofLife {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  width: 33%;
+}
+
+.Dashboard {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  background: #111;
+  font-family: "Montserrat", sans-serif;
+  align-items: stretch;
+  justify-content: space-between;
+  color: #fff;
+  overflow: hidden;
+  gap: 30px;
+  padding-right: 30px;
+}
+
+.DashboardHeader {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 10vh;
+}
+
+.Dashboard img {
+  margin: 20px auto;
+}
+
+.SideBar {
+  display: flex;
+  flex-direction: column;
+  width: 250px;
+  height: 100%;
+  background: #191919;
+  font-family: "Poppins", sans-serif;
+  align-items: center;
+  box-shadow: 1px 1px 10px rgba(255, 255, 255, 0.1);
+  gap: 10%;
+  padding-top: 40px;
+}
+
+.SquareDashboard {
+  display: flex;
+  flex-direction: column;
+  background: #191919;
+  font-family: "Poppins", sans-serif;
+  box-shadow: 1px 1px 10px rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  flex: 1;
+}
+
+.ButtonsNav {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: auto;
+  gap: 15px;
+}
+
+.Analytics {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  gap: 30px;
+}
+.AnalyticsContainer2 {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  height: 45vh;
+  gap: 30px;
+}
+
+.AnalyticsContainer3 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 30px;
+  width: 33%;
+  height: 100%;
+}
+
+.ViewActiveGoals,
+.ViewHabitTracker {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 20px;
+}
+.ViewWheelofLife {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  width: 33%;
+}
+.AnalyticsContainer3 .GoalList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  border-radius: 10px;
+  font-size: 22px;
+  align-items: center;
+  color: #fff;
+  padding: 10px;
+  height: 100%;
+  overflow-y: auto;
 }

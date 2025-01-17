@@ -10,9 +10,10 @@ interface ButtonProps {
   colorText?: string;
   width?: string;
   srcsvg?: string;
+  height?: string;
 }
 
-function Button(props: ButtonProps) {
+export default function Button(props: ButtonProps) {
   const {
     text,
     color1 = "#292929",
@@ -22,6 +23,7 @@ function Button(props: ButtonProps) {
     onClick,
     width,
     srcsvg,
+    height,
   } = props; // Colores por defecto
 
   return (
@@ -31,6 +33,7 @@ function Button(props: ButtonProps) {
         background: `linear-gradient(145deg, ${color1}, ${color2})`,
         color: colorText,
         width: width,
+        height: height,
       }}
       onClick={onClick}
       type="submit"
@@ -42,5 +45,3 @@ function Button(props: ButtonProps) {
     </button>
   );
 }
-
-export default Button;

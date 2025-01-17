@@ -1,0 +1,43 @@
+.habit {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: center;
+
+  border-radius: 10px;
+  margin-left: 50px;
+  margin-right: 20px;
+  gap: 20px;
+  width: 100%;
+  color: #666;
+}
+
+.habit button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  cursor: pointer;
+  background-color: #666;
+  width: 15px;
+  margin-bottom: 8px;
+  height: 15px;
+  padding: auto;
+}
+
+.habit p {
+  font-size: 20px;
+  text-align: center;
+  margin-bottom: 8px;
+  margin-left: 10px;
+  margin-right: 10px;
+  color: #666;
+}
+.habit-active {
+  display: none;
+}
+
+.habit button:hover {
+  background-color: #aaa;
+}

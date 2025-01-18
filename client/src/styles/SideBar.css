@@ -1,0 +1,11 @@
+.SideBar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #191919;
+  font-family: "Poppins", sans-serif;
+  align-items: center;
+  box-shadow: 1px 1px 10px rgba(255, 255, 255, 0.1);
+  gap: 10%;
+  padding-top: 40px;
+}

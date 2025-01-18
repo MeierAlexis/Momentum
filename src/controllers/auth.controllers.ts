@@ -21,7 +21,7 @@ interface UserLogin {
 
 export const loginUser = async (req, res) => {
   const { email, password }: UserLogin = req.body;
-  const email_lower = email.toLowerCase();
+  const email_lower = email.toLowerCase().trim();
   try {
     // Find user by email
     const result = await pool.query("SELECT * FROM users WHERE email = $1", [
@@ -56,6 +56,7 @@ export const loginUser = async (req, res) => {
       id: user.id,
       username: user.username,
       email: user.email,
+      name: user.name,
     });
   } catch (error) {
     res.status(500).json({
@@ -75,13 +76,15 @@ export const registerUser = async (req, res) => {
     confirmPassword,
   }: UserRegister = req.body;
 
+  console.log(req.body);
+
   if (password !== confirmPassword) {
     return res.status(400).json({
       message: ["Passwords do not match"],
     });
   }
 
-  const email_lower = email.toLowerCase();
+  const email_lower = email.toLowerCase().trim();
 
   try {
     const userFound = await pool.query("SELECT * FROM users WHERE email = $1", [
@@ -126,6 +129,7 @@ export const registerUser = async (req, res) => {
       success: true,
       message: "User registered successfully",
       user: result.rows[0],
+      name: result.rows[0].name,
     });
   } catch (error) {
     res.status(500).json({
@@ -211,13 +215,10 @@ export const verifyToken = async (req, res) => {
       });
     }
 
-    const user = AuthenticatedUser.rows[0];
-    console.log(user);
-
     // responde user
     return res.status(200).json({
       id: AuthenticatedUser.rows[0].id,
-      firstName: AuthenticatedUser.rows[0].name,
+      name: AuthenticatedUser.rows[0].name,
       lastName: AuthenticatedUser.rows[0].lastname,
       email: AuthenticatedUser.rows[0].email,
     });

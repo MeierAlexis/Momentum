@@ -4,4 +4,5 @@ export interface ExtensibleCardProps {
   startDate: string;
   endDate?: string;
   state: boolean;
+  style?: React.CSSProperties;
 }

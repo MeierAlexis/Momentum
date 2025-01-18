@@ -3,4 +3,6 @@ export interface HabitData {
   title: string;
   state: boolean;
   goalId: string;
+  goalPerWeek?: number;
+  completed?: number;
 }

@@ -34,7 +34,7 @@ type CustomPieChartProps = {
 
 export const CustomPieChart: React.FC<CustomPieChartProps> = ({ data }) => {
   return (
-    <div style={{ width: "350px", margin: "0 auto", height: "400px" }}>
+    <div style={{ width: "300px", margin: "0 auto", height: "280px" }}>
       <Radar
         data={data}
         options={{
@@ -47,7 +47,7 @@ export const CustomPieChart: React.FC<CustomPieChartProps> = ({ data }) => {
               ticks: { display: false },
               pointLabels: {
                 font: {
-                  size: 22,
+                  size: 18,
                 },
                 color: "#ddd",
               },

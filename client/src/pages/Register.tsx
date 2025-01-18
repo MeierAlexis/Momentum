@@ -45,6 +45,7 @@ export default function Register() {
 
   // Manejo de formulario asíncrono
   const onSubmit = async (data: UserRegister) => {
+    console.log(data);
     signup(data);
   };
 

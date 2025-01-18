@@ -1,21 +1,24 @@
 import { createContext, useState, useContext, useEffect } from "react";
-import { registerRequest, loginRequest, verifyTokenRequest } from "../api/auth";
+import {
+  registerRequest,
+  loginRequest,
+  verifyTokenRequest,
+  logoutRequest,
+} from "../api/auth";
 import { UserRegister, UserLogin } from "../interfaces/auth";
 import Cookie from "js-cookie";
 
-// Define la forma del contexto
 interface AuthContextType {
   user: UserRegister | UserLogin | null;
   signup: (user: UserRegister) => Promise<void>;
   login: (user: UserLogin) => Promise<void>;
+  logout: () => void;
   isAuthenticated: boolean;
   errors: string[];
 }
 
-// Crea el contexto con un tipo explícito
 export const AuthContext = createContext<AuthContextType | null>(null);
 
-// Hook personalizado para usar el contexto
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -24,79 +27,68 @@ export const useAuth = () => {
   return context;
 };
 
-// Proveedor del contexto
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<UserRegister | UserLogin | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
+
+  const logout = async () => {
+    await logoutRequest();
+    Cookie.remove("token");
+    setUser(null);
+    setIsAuthenticated(false);
+  };
 
   const signup = async (userData: UserRegister) => {
     try {
       const res = await registerRequest(userData);
-      setUser(res.data as UserRegister);
+      setUser(res.data);
       setIsAuthenticated(true);
       setErrors([]);
     } catch (error: any) {
       setErrors(
         error.response?.data?.message
-          ? Array.isArray(error.response.data.message)
-            ? error.response.data.message
-            : [error.response.data.message]
+          ? [error.response.data.message]
           : ["Unexpected error"]
       );
-      throw error;
     }
   };
 
   const login = async (userData: UserLogin) => {
     try {
       const res = await loginRequest(userData);
-      setUser(res.data as UserLogin);
+      setUser(res.data);
       setIsAuthenticated(true);
       setErrors([]);
     } catch (error: any) {
       setErrors(
         error.response?.data?.message
-          ? Array.isArray(error.response.data.message)
-            ? error.response.data.message
-            : [error.response.data.message]
+          ? [error.response.data.message]
           : ["Unexpected error"]
       );
-      throw error;
     }
   };
 
   useEffect(() => {
-    if (errors.length > 0) {
-      const timer = setTimeout(() => setErrors([]), 5000);
-      return () => clearTimeout(timer);
-    }
-  }, [errors]);
-
-  useEffect(() => {
-    async function CheckLogin() {
-      const cookies = Cookie.get();
-      if (cookies.token) {
+    async function checkLogin() {
+      const token = Cookie.get("token");
+      if (token) {
         try {
-          const res = await verifyTokenRequest(cookies.token);
-          console.log(res);
-          if (!res.data) {
-            setIsAuthenticated(false);
-          } else {
-            setUser(res.data);
-          }
-        } catch (error: any) {
+          const res = await verifyTokenRequest();
+          setUser(res.data);
+          setIsAuthenticated(true);
+        } catch {
           setIsAuthenticated(false);
           setUser(null);
         }
       }
     }
-
-    CheckLogin();
+    checkLogin();
   }, []);
+
   return (
     <AuthContext.Provider
-      value={{ user, signup, isAuthenticated, errors, login }}
+      value={{ user, signup, login, logout, isAuthenticated, errors }}
     >
       {children}
     </AuthContext.Provider>

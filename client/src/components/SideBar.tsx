@@ -22,7 +22,7 @@ export function SideBar() {
   const currentPath = useLocation().pathname;
   const handleLogout = () => {
     logout();
-    navigate("/login");
+    navigate("/home");
   };
 
   const handleButtonGoals = () => {

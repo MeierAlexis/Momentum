@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { initialHabits, initialGoals } from "../../data/InitialData.tsx";
 import { ProgressBar } from "../components/ProgressBar.tsx";
+import { ComparativeChart } from "../components/ComparativeChart.tsx";
 
 // Datos estáticos movidos fuera del componente
 const WeekData = [
@@ -25,6 +26,15 @@ const MonthData = [
   { date: "2023-01-04", completed: 5 },
   { date: "2023-01-05", completed: 3 },
   { date: "2023-01-06", completed: 4 },
+];
+
+const PreviousMonthData = [
+  { date: "2023-02-01", completed: 2 },
+  { date: "2023-02-02", completed: 3 },
+  { date: "2023-02-03", completed: 4 },
+  { date: "2023-02-04", completed: 1 },
+  { date: "2023-02-05", completed: 4 },
+  { date: "2023-02-06", completed: 5 },
 ];
 
 export function Tracker() {
@@ -83,7 +93,9 @@ export function Tracker() {
   return (
     <div className="Tracker">
       <SideBar />
+
       <div className="TrackerAnalytics">
+        <h2 className="TrackerTitle">Tracker</h2>
         <div className="SquareDashboard Progress">
           <h2>{weekView ? "Weekly" : "Monthly"} Progress</h2>
           <ChartProgression
@@ -92,22 +104,41 @@ export function Tracker() {
             view={weekView ? "Month" : "Week"}
           />
         </div>
+        <h2 className="TrackerTitle">Tracker Analytics</h2>
         <div className="TrackerDetail">
-          <div className="SquareDashboard StreakHabits">
-            <h2>Streak Days</h2>
-            <p>{streak}</p>
+          <div className="ContainerDetailPerfomance">
+            <div className="SquareDashboard StreakHabits">
+              <h2>Streak Days</h2>
+              <p>{streak}</p>
+            </div>
+            <div className="SquareDashboard  FailedHabits">
+              <h2>Failed Habits</h2>
+              <p>{failedHabits}</p>
+            </div>
           </div>
           <div className="SquareDashboard  CompletedHabits">
-            <ProgressBar />
+            <h2>Week Progress</h2>
+            {habits.map((habit) => (
+              <ProgressBar
+                key={habit.id}
+                habitName={habit.title}
+                completedHabits={habit.state ? 1 : 0}
+                totalHabits={7}
+              />
+            ))}
           </div>
-          <div className="SquareDashboard  FailedHabits">
-            <h2>Failed Habits</h2>
-            <p>{failedHabits}</p>
+
+          <div className="SquareDashboard  ComparativeChart">
+            <h2>Current vs Previous</h2>
+            <ComparativeChart
+              dataCurrentMonth={MonthData}
+              dataPreviousMonth={PreviousMonthData}
+            />
           </div>
           <div className="SquareDashboard  HabitTracker">
             <h2>Habit Tracker</h2>
             {motion ? (
-              <motion.div layout></ProgressBar>
+              <motion.div layout>
                 {getHabitsByGoal().map(({ goal, habits }) => (
                   <div key={goal.id} className="habit-container">
                     <h3>{goal.title}</h3>

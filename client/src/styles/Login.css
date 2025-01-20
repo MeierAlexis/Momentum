@@ -13,7 +13,27 @@
   transform: translateY(-50%);
   cursor: pointer;
 }
+.input-error {
+  border: 2px solid red !important;
+  background-color: rgba(255, 0, 0, 0.1); /* Fondo rojo claro */
+  color: white;
+  box-shadow: 0 0 10px red;
+}
 
+.input-error::placeholder {
+  color: rgba(
+    255,
+    0,
+    0,
+    0.7
+  ); /* Hace que el placeholder también se ponga rojo */
+}
+
+.input-error:focus {
+  outline: none;
+  border-color: darkred;
+  box-shadow: 0 0 15px darkred;
+}
 .Login {
   display: flex;
   flex-direction: column;

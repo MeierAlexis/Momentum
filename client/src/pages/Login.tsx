@@ -55,21 +55,21 @@ export default function Login() {
             type="text"
             placeholder="Email"
             {...register("email", { required: "Email is required" })}
+            className={errors.email ? "input-error" : ""}
           />
 
-          {errors.email && <p>"Email is required"</p>}
           <div className="password-container">
             <input
               type={showPassword ? "text" : "password"}
               placeholder="Password"
               {...register("password", { required: "Password is required" })}
+              className={errors.password ? "input-error" : ""}
             />
-
-            {errors.password && <p>"Password is required"</p>}
             <FontAwesomeIcon
               icon={showPassword ? faEyeSlash : faEye}
               onClick={togglePasswordVisibility}
               className="password-visibility-icon"
+              color={errors.password ? "red" : "white"}
             />
           </div>
           <Button text="Log In" color1="#FF5733" color2="#FF1044" />

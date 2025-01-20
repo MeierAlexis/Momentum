@@ -1,0 +1,9 @@
+.GoalSection {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  overflow: hidden;
+  background-color: #111;
+  height: 100vh;
+}

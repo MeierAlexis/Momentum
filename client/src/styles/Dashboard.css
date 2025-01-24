@@ -141,9 +141,11 @@
   flex-direction: column;
   gap: 20px;
   height: 100%;
-  max-width: 10vw;
+  max-width: 20vw;
   overflow-y: auto;
   overflow-x: none;
+  scrollbar-width: thin;
+  scrollbar-color: #ff5733 #222;
 }
 ul {
   padding: 0;

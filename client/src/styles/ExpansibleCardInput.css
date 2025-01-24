@@ -1,0 +1,136 @@
+/* General card styles */
+.ExpandedCardInput,
+.ClosedCardInput {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding: 40px;
+  border-radius: 8px;
+  background-color: #191919;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+}
+.CompletedButtonInputSaveGoal {
+  margin-top: 15px;
+  padding: 10px 10px;
+  background-color: #ff5733;
+  color: white;
+  width: 70%;
+  margin: auto;
+  border: none;
+  border-radius: 10px;
+
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.CompletedButtonInputSaveGoal:hover {
+  background-color: #ff1044;
+}
+.ExpandedCardInput {
+  max-width: 600px;
+  width: 100%;
+}
+
+.ClosedCardInput {
+  max-width: 300px;
+  width: 100%;
+  text-align: center;
+}
+
+.formInput .error {
+  color: red;
+  border: 1px solid red !important;
+  box-shadow: 0 0 10px red;
+}
+.formInput {
+  text-align: center;
+  color: #333;
+  margin-bottom: 1rem;
+
+  font-family: "Arial", sans-serif;
+}
+.formInput li {
+  color: #ddd;
+}
+/* Form styles */
+.formInput {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.formInput p {
+  margin: 0;
+  color: #ddd;
+  font-size: 1.1rem;
+  font-family: "Poppins", sans-serif;
+}
+
+.formInput input[type="text"],
+.formInput input[type="date"],
+.formInput input[type="number"] {
+  padding: 10px;
+  border: 1px solid #191919;
+  background-color: #333;
+  color: #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  width: 100%;
+  transition: border-color 0.2s ease;
+}
+
+.formInput [type="text"]:focus,
+.formInput [type="date"]:focus,
+.formInput [type="number"]:focus {
+  border-color: #ff5733;
+  outline: none;
+}
+
+/* Button styles */
+.CompleteButtonInput {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background-color: #0074e4;
+  color: white;
+  width: 50%;
+  border: none;
+  border-radius: 10px;
+
+  margin: 50px auto;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.CompleteButtonInput:hover {
+  background-color: #0069d9;
+}
+
+.CompleteButtonInput:active {
+  transform: scale(0.98);
+}
+
+/* ExpansibleCardInput.css */
+.ExpansibleCardInputContainer {
+  position: fixed;
+  left: 35%;
+  top: -1%;
+
+  transform: translate(-50%, 50%);
+  z-index: 1000; /* Asegúrate de que esté por encima de otros elementos */
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.ExpandedCardInput {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 600px; /* Ajusta el ancho según sea necesario */
+}

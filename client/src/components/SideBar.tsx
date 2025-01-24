@@ -12,10 +12,6 @@ import {
 import { useAuth } from "../context/AuthContext.tsx";
 import "../styles/SideBar.css";
 
-interface SideBarProps {
-  isOpen: boolean;
-}
-
 export function SideBar() {
   const navigate = useNavigate();
   const { logout } = useAuth();

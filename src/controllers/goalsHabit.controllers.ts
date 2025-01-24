@@ -1,15 +1,14 @@
 import { pool } from "../db.ts";
 import crypto from "node:crypto";
-import jwt from "jsonwebtoken";
-
-interface Goal {
+export interface GoalData {
   id: string;
   title: string;
   description: string;
-  start_date: Date;
-  end_date: Date | null;
+  start_date: string;
+  end_date: string;
+  target: number;
+  idUser: string;
   state: boolean;
-  id_user: string;
 }
 
 export const getGoals = async (req, res) => {
@@ -35,28 +34,32 @@ export const getGoals = async (req, res) => {
 };
 
 export const createGoal = async (req, res) => {
-  const { title, description, start_date, end_date }: Goal = req.body;
+  const { title, description, start_date, end_date, target }: GoalData =
+    req.body;
 
   try {
     const id = crypto.randomUUID();
     const id_user = req.user.id;
     const state = false;
-    const endDate = null;
-    // Convierte start_date a Date
-    const startDate = new Date(start_date);
-
-    if (end_date) {
-      const endDate = new Date(end_date);
-    }
 
     const result = await pool.query(
-      "INSERT INTO goal (id, title, description, start_date, end_date, state, id_user) VALUES ($1, $2, $3, $4, $5, $6, $7)",
-      [id, title, description, startDate, endDate, state, id_user]
+      "INSERT INTO goal (id, title, description, start_date, end_date, state, id_user, target) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
+      [
+        id,
+        title,
+        description,
+        start_date,
+        end_date,
+        state,
+        id_user,
+        Number(target),
+      ]
     );
 
     res.status(201).json({
       success: true,
       message: "Goal created successfully",
+      goal: result.rows[0],
     });
   } catch (err) {
     console.error("Error details:", err);
@@ -109,21 +112,22 @@ export const getGoal = async (req, res) => {
 
 export const updateGoal = async (req, res) => {
   const { id } = req.params;
-  const { title, description, start_date, end_date }: Goal = req.body;
+  const { title, description, start_date, end_date, target, state }: GoalData =
+    req.body;
 
   try {
     const result = await pool.query(
-      "UPDATE goal SET title= $1, description= $2, start_date= $3, end_date= $4 WHERE id = $5 RETURNING *",
-      [title, description, start_date, end_date, id]
+      "UPDATE goal SET title= $1, description= $2, start_date= $3, end_date= $4, target= $5, state= $6 WHERE id = $7 RETURNING *",
+      [title, description, start_date, end_date, target, state, id]
     );
     return res.status(200).json({
-      sucess: true,
-      message: "Goal update successfully",
-      goal: result,
+      success: true,
+      message: "Goal updated successfully",
+      goal: result.rows[0],
     });
   } catch (err) {
     return res.status(500).json({
-      message: "An error ocurred while updating the goal",
+      message: "An error occurred while updating the goal",
       success: false,
     });
   }
@@ -131,16 +135,18 @@ export const updateGoal = async (req, res) => {
 
 export const createHabit = async (req, res) => {
   const { id: id_goal } = req.params;
-  const { title, frequency } = req.body;
+  const { title, days } = req.body;
+  const id_habit = crypto.randomUUID();
+  const state = false;
+
+  const completed = 0;
+  const goal_per_week = days.split(",").length; // Cuenta la cantidad de dias
 
   try {
-    const id_habit = crypto.randomUUID();
-    const state = false;
-
     // Inserción en la base de datos con retorno de datos creados
     const result = await pool.query(
-      "INSERT INTO habit (id, id_goal, frequency, title, state) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-      [id_habit, id_goal, frequency, title, state]
+      "INSERT INTO habit (id, id_goal, title, state, goal_per_week, completed, days) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
+      [id_habit, id_goal, title, state, goal_per_week, completed, days]
     );
 
     res.status(201).json({
@@ -180,7 +186,7 @@ export const deleteHabitByGoal = async (req, res) => {
 
 export const getHabitsByGoal = async (req, res) => {
   const { id: id_goal } = req.params;
-  console.log(id_goal);
+
   try {
     const result = await pool.query("SELECT * FROM habit WHERE id_goal = $1", [
       id_goal,

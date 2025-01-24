@@ -1,9 +1,137 @@
 .GoalSection {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   flex-wrap: nowrap;
   overflow: hidden;
   background-color: #111;
+  width: 100%;
   height: 100vh;
+}
+
+.GoalSection img {
+  margin: 20px auto;
+}
+.Goals {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.Goals h2 {
+  padding-top: 20px;
+  padding-left: 20px;
+  color: #ddd;
+}
+.GoalAnalytics {
+  display: flex;
+  flex-grow: 1;
+  padding: 20px;
+  width: 100%;
+  gap: 20px;
+}
+
+.GoalsTitle {
+  font-weight: bold;
+  color: #ccc;
+  font-size: 40px;
+}
+
+.GoalsContainer3 {
+  display: flex;
+  flex-direction: column;
+  height: 80%;
+  gap: 20px;
+}
+.GoalsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 40%;
+}
+
+.ActiveGoals,
+.AchievedGoal,
+.ProgressGoal {
+  flex: 1;
+  padding: 20px;
+  border-radius: 10px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 300px;
+  overflow-y: auto;
+  overflow-wrap: normal;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: #ff5733 #333;
+}
+.GoalsContainer4 {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+.ActiveGoals h2,
+.AchievedGoal h2,
+.ProgressGoal h2,
+.WheelOfLife h2,
+.Notes h2 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color: #ddd;
+}
+
+.AddGoal {
+  background: #ff5733;
+  border: none;
+  color: white;
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.AddGoal:hover {
+  background: #e64a19;
+}
+
+.AnalyticsContainer {
+  display: flex;
+  gap: 20px;
+}
+
+.GoalProgress,
+.WheelOfLife {
+  padding: 20px;
+  border-radius: 10px;
+  color: white;
+  text-align: center;
+  justify-content: center;
+}
+
+.Notes {
+  padding: 20px;
+  border-radius: 10px;
+  color: white;
+  text-align: center;
+  max-width: 400px;
+}
+
+.Notes textarea {
+  width: 100%;
+
+  background: #333;
+  border: 1px solid #555;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  resize: none;
+}
+.GoalsContainer2 {
+  display: flex;
+  flex-direction: row;
+  height: 60%;
+  gap: 20px;
 }

@@ -180,7 +180,7 @@ export function Dashboard() {
           </div>
 
           <div className="SquareDashboard InspirationalQuote">
-            <h2>Inspirational Quote</h2>
+            <h2>Quote of the day</h2>
             <p>"{quote?.quote}"</p>
             <span>-{quote?.author}</span>
           </div>

@@ -27,4 +27,5 @@ export const goalSchema = z.object({
       message: "The end date must be a valid date",
     })
     .nullable(), // Accept null
+  target: z.number({ message: "The target is required" }),
 });

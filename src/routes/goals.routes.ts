@@ -12,7 +12,7 @@ import {
   createHabit,
   updateGoal,
   updateHabit,
-} from "../controllers/goals.controllers.ts";
+} from "../controllers/goalsHabit.controllers.ts";
 
 const router = Router();
 

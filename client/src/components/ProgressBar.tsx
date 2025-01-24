@@ -3,9 +3,9 @@ import React from "react";
 import "../styles/ProgressBar.css";
 
 interface ProgressBarProps {
-  habitName: string;
-  completedHabits: number;
-  totalHabits: number;
+  habitName?: string;
+  completedHabits?: number;
+  totalHabits?: number;
 }
 
 export const ProgressBar: React.FC<ProgressBarProps> = ({

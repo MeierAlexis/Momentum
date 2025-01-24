@@ -29,12 +29,20 @@ type CustomPieChartProps = {
       borderColor: string;
       borderWidth: number;
     }[];
+    width: number;
+    height: number;
   };
 };
 
 export const CustomPieChart: React.FC<CustomPieChartProps> = ({ data }) => {
   return (
-    <div style={{ width: "300px", margin: "0 auto", height: "280px" }}>
+    <div
+      style={{
+        width: data.width ? data.width : 300,
+        margin: "0 auto",
+        height: data.height ? data.height : 280,
+      }}
+    >
       <Radar
         data={data}
         options={{

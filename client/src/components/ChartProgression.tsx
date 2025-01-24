@@ -16,28 +16,38 @@ type DataPoint = {
 interface AreaChartExampleProps {
   data: DataPoint[];
   view: string;
-  onButtonClick: (action: string) => void; // Callback para manejar clics en los botones
+  onButtonClick: (action: string) => void;
+  height?: number;
 }
 
 export const ChartProgression: React.FC<AreaChartExampleProps> = ({
   data,
   onButtonClick,
   view,
+  height,
 }) => {
   return (
-    <div style={{ width: "100%", height: 300, position: "relative" }}>
+    <div
+      style={{
+        width: "100%",
+        height: height ? height : 300,
+        position: "relative",
+      }}
+    >
       <div style={{ position: "absolute", top: 10, right: 10, zIndex: 10 }}>
-        <button
-          onClick={() => onButtonClick("day")}
-          style={{
-            marginRight: 10,
-            background: "#333",
-            border: "1px solid #fff",
-            color: "#fff",
-          }}
-        >
-          {view}
-        </button>
+        {onButtonClick && (
+          <button
+            onClick={() => onButtonClick("day")}
+            style={{
+              marginRight: 10,
+              background: "#333",
+              border: "1px solid #fff",
+              color: "#fff",
+            }}
+          >
+            {view}
+          </button>
+        )}
       </div>
       <ResponsiveContainer>
         <AreaChart

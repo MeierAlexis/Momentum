@@ -80,8 +80,9 @@ export function ExpansibleCard(
 
           color: state ? "#666" : "",
           position: isExpanded ? "fixed" : "relative", // Fija la tarjeta en el centro cuando está expandida
-          top: isExpanded ? "35%" : "auto",
+          top: isExpanded ? "22%" : "auto",
           left: isExpanded ? "35%" : "auto",
+
           transform: isExpanded ? "translate(-50%, -50%)" : "none",
           zIndex: isExpanded ? 1000 : 1, // Asegura que la tarjeta esté por encima del fondo oscuro
         }}

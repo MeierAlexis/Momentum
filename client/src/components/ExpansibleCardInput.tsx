@@ -31,8 +31,6 @@ export function ExpansibleCardInput() {
     },
   });
 
-  const { getHabits } = useGoalHabit();
-
   const [isExpanded, setIsExpanded] = useState(true);
   const [habitInput, setHabitInput] = useState<{
     title: string;
@@ -41,15 +39,6 @@ export function ExpansibleCardInput() {
     title: "",
     days: [],
   });
-
-  const getHabitsByGoalId = async (goalId: string) => {
-    try {
-      const HabitData = await getHabits(goalId);
-      console.log(HabitData);
-    } catch (error) {
-      console.error("Error al obtener las metas:", error);
-    }
-  };
 
   const [habitList, setHabitList] = useState<HabitData[]>([]);
   const { addGoal, addHabit, getGoals } = useGoalHabit();
@@ -80,7 +69,6 @@ export function ExpansibleCardInput() {
 
   const handleSave = async (data: GoalData) => {
     try {
-      // Guardar la meta y obtener la meta creada (con ID)
       await addGoal(data);
       const goalsResponse = await getGoals(); // Obtener las metas actualizadas
 
@@ -100,9 +88,9 @@ export function ExpansibleCardInput() {
           id: crypto.randomUUID(),
           title: habit.title,
           state: false,
-          goalId: lastGoal.id,
+          id_goal: lastGoal.id,
           createdAt: new Date().toISOString(),
-          goalPerWeek: habit.days.length,
+          goal_per_week: habit.days.length,
           completed: 0,
           days: habit.days,
         };
@@ -142,7 +130,7 @@ export function ExpansibleCardInput() {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
             transition={{ type: "spring", stiffness: 200, damping: 30 }}
-            className="ExpansibleCardInputContainer" // Clase para posicionamiento
+            className="ExpansibleCardInputContainer"
           >
             <div className="ExpandedCardInput">
               <h3

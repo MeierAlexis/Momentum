@@ -4,9 +4,11 @@ import { ChartProgression } from "../components/ChartProgression";
 import { Habit } from "../components/Habit";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import { initialHabits, initialGoals } from "../../data/InitialData.tsx";
+import { initialHabits } from "../../data/InitialData.tsx";
 import { ProgressBar } from "../components/ProgressBar.tsx";
 import { ComparativeChart } from "../components/ComparativeChart.tsx";
+import { useGoalHabit } from "../context/GoalHabitContext.tsx";
+import { HabitData } from "../interfaces/HabitData.ts";
 
 // Datos estáticos movidos fuera del componente
 const WeekData = [
@@ -38,22 +40,70 @@ const PreviousMonthData = [
 ];
 
 export function Tracker() {
-  const [goals, setGoals] = useState(initialGoals);
+  const [goals, setGoals] = useState([]);
   const [streak, setStreak] = useState(0);
   const [failedHabits, setFailedHabits] = useState(0);
   const [weekView, setWeekView] = useState(true);
-  const [habits, setHabits] = useState(initialHabits);
+  const [habits, setHabits] = useState([]);
+  const { getGoals, getHabits, updateHabit } = useGoalHabit();
 
   const handleButtonClick = () => {
     setWeekView(!weekView);
   };
 
+  const initialGoals = async () => {
+    try {
+      const goalsData = await getGoals();
+      console.log(goalsData);
+      setGoals(goalsData.goals);
+    } catch (error) {
+      console.error("Error fetching goals:", error);
+    }
+  };
+
+  const HandleCompleteHabit = async (habit: HabitData, goalId: string) => {
+    habit.state = true;
+    habit.completed += 1;
+    console.log(habit);
+    try {
+      await updateHabit(habit, goalId);
+    } catch (error) {
+      console.error("Error updating habit:", error);
+    }
+  };
+
+  const initialHabits = async () => {
+    try {
+      const allHabits = [];
+      for (const goal of goals) {
+        const habitsData = await getHabits(goal.id);
+        allHabits.push(...habitsData.habits);
+      }
+      setHabits(allHabits);
+    } catch (error) {
+      console.error("Error fetching habits:", error);
+    }
+  };
+
+  useEffect(() => {
+    initialGoals();
+  }, []);
+
+  useEffect(() => {
+    if (goals.length > 0) {
+      initialHabits();
+    }
+  }, [goals]);
+
   function getHabitsByGoal() {
+    console.log(goals, habits);
+    if (!goals || !habits) return [];
+
     return goals
       .map((goal) => ({
         goal,
         habits: habits.filter(
-          (habit) => habit.goalId === goal.id && !habit.state && !goal.state
+          (habit) => habit.id_goal === goal.id && !habit.state && !goal.state
         ),
       }))
       .filter(({ habits }) => habits.length > 0);
@@ -118,12 +168,13 @@ export function Tracker() {
           </div>
           <div className="SquareDashboard  CompletedHabits">
             <h2>Week Progress</h2>
+
             {habits.map((habit) => (
               <ProgressBar
                 key={habit.id}
                 habitName={habit.title}
                 completedHabits={habit.state ? 1 : 0}
-                totalHabits={7}
+                totalHabits={habit.goal_per_week}
               />
             ))}
           </div>
@@ -137,9 +188,15 @@ export function Tracker() {
           </div>
           <div className="SquareDashboard  HabitTracker">
             <h2>Habit Tracker</h2>
-            {motion ? (
-              <motion.div layout>
-                {getHabitsByGoal().map(({ goal, habits }) => (
+            <motion.div
+              layout
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+            >
+              {getHabitsByGoal().length > 0 ? (
+                getHabitsByGoal().map(({ goal, habits }) => (
                   <div key={goal.id} className="habit-container">
                     <h3>{goal.title}</h3>
                     {habits.map((habit) => (
@@ -148,15 +205,15 @@ export function Tracker() {
                         title={habit.title}
                         state={habit.state}
                         colorText="#FFF"
-                        onToggle={() => toggleHabitState(habit.id)}
+                        onToggle={() => HandleCompleteHabit(habit, goal.id)}
                       />
                     ))}
                   </div>
-                ))}
-              </motion.div>
-            ) : (
-              <div>No habits available</div>
-            )}
+                ))
+              ) : (
+                <div>No habits available</div>
+              )}
+            </motion.div>
           </div>
         </div>
       </div>

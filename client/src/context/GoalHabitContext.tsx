@@ -36,7 +36,7 @@ interface GoalHabitContextType {
   addHabit: (habit: HabitData, goalId: string) => Promise<void>;
   updateHabit: (
     habit: HabitData,
-    habitId: string,
+
     goalId: string
   ) => Promise<void>;
   deleteHabit: (habitId: string, goalId: string) => Promise<void>;
@@ -140,11 +140,15 @@ export const GoalHabitProvider = ({
     }
   };
 
-  const updateHabit = async (
-    habit: HabitData,
-    habitId: string,
-    goalId: string
-  ) => {};
+  const updateHabit = async (habit: HabitData, goalId: string) => {
+    console.log(habit);
+    try {
+      const res = await updateHabitRequest(goalId, habit);
+      setHabits(res.data);
+    } catch (error) {
+      console.error("Something went wrong while updating habit", error);
+    }
+  };
   const deleteHabit = async (habitId: string, goalId: string) => {};
   const UpdateProgress = async (progress: GoalUpdate) => {};
 

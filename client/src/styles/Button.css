@@ -2,6 +2,7 @@
   display: flex;
   padding: 10px 20px;
   gap: 10px;
+  position: relative;
   border-radius: 10px;
   border: none;
   background: linear-gradient(145deg, #111, #292929);

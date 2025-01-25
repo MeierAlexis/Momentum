@@ -2,9 +2,9 @@ export interface HabitData {
   id?: string;
   title: string;
   state: boolean;
-  goalId: string;
-  createdAt?: string;
-  goalPerWeek: number;
+  id_goal: string;
+  created_at?: string;
+  goal_per_week: number;
   completed: number;
   days: string;
 }

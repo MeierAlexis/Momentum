@@ -207,12 +207,12 @@ export const getHabitsByGoal = async (req, res) => {
 export const updateHabit = async (req, res) => {
   const { id: id_goal, id_habit } = req.params;
   console.log(id_habit);
-  const { frequency, title, state } = req.body;
+  const { goal_per_week, title, state, days, completed } = req.body;
 
   try {
     const result = await pool.query(
-      "UPDATE habit SET frequency = $1, title = $2, state = $3 WHERE id = $4 AND id_goal = $5 RETURNING *",
-      [frequency, title, state, id_habit, id_goal] // Pasar los dos IDs en la consulta
+      "UPDATE habit SET goal_per_week= $1, title= $2, state= $3, days= $4, completed= $5 WHERE id_goal = $6 AND id = $7 RETURNING *",
+      [goal_per_week, title, state, days, completed, id_goal, id_habit]
     );
 
     return res.status(200).json({

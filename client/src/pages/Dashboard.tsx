@@ -2,24 +2,45 @@ import "../styles/Dashboard.css";
 import { SideBar } from "../components/SideBar.tsx";
 import { CustomPieChart } from "../components/CustomPieChart.tsx";
 import { motion } from "framer-motion";
-import { initialGoals, DaylyQuotes } from "../../data/InitialData.tsx";
+import { DaylyQuotes } from "../../data/InitialData.tsx";
 import { useState, useEffect } from "react";
 import Button from "../components/Button.tsx";
 import { ExpansibleCard } from "../components/ExpansibleCard.tsx";
 import { useAuth } from "../context/AuthContext.tsx";
+import { useGoalHabit } from "../context/GoalHabitContext.tsx";
+import { GoalData } from "../interfaces/GoalData.ts";
+import { ExpansibleCardInput } from "../components/ExpansibleCardInput.tsx";
 
 export function Dashboard() {
-  const [goals, setGoals] = useState(initialGoals);
+  const { getGoals, updateGoal, deleteGoal } = useGoalHabit();
+
+  const [goals, setGoals] = useState([]);
+  const [showForm, setShowForm] = useState(false);
   const { user } = useAuth();
 
-  const completeGoal = (id: string) => {
-    setGoals((prevGoals) =>
-      prevGoals.map((goal) =>
-        goal.id === id ? { ...goal, state: true } : goal
-      )
-    );
+  const initialGoals = async () => {
+    try {
+      const goalsData = await getGoals();
+      console.log(goalsData);
+      setGoals(goalsData.goals);
+    } catch (error) {
+      console.error("Error fetching goals:", error);
+    }
   };
 
+  useEffect(() => {
+    initialGoals();
+  }, [showForm]);
+
+  const handleComplete = (goal: GoalData) => {
+    try {
+      goal.state = true;
+      updateGoal(goal);
+      setGoals([...goals.filter((g) => g.id !== goal.id), goal]);
+    } catch (error) {
+      console.error("Error al actualizar la meta:", error);
+    }
+  };
   const getActiveGoals = () => goals.filter((goal) => !goal.state);
 
   const getCompletedGoalsCount = () =>
@@ -34,6 +55,16 @@ export function Dashboard() {
       DaylyQuotes[Math.floor(Math.random() * DaylyQuotes.length)];
     setQuote(randomQuote);
   }, []);
+
+  const handleDelete = (goalID: string) => {
+    try {
+      deleteGoal(goalID);
+      setGoals([...goals.filter((goal) => goal.id !== goalID)]);
+    } catch (error) {
+      console.error("Something went wrong:", error);
+    }
+  };
+
   const getDate = () => {
     const date = new Date();
     const day = date.getDate();
@@ -87,8 +118,9 @@ export function Dashboard() {
             color2="#C70039"
             width="180px"
             height="70px"
-            onClick={() => console.log("Add Goal clicked!")}
+            onClick={() => setShowForm(!showForm)}
           />
+          {showForm && <ExpansibleCardInput />}
         </div>
 
         <div className="AnalyticsContainer1">
@@ -129,20 +161,19 @@ export function Dashboard() {
                   flexWrap: "wrap",
                   width: "100%",
                   flexDirection: "column",
-                  alignItems: "center",
+
                   justifyContent: "center",
                 }}
               >
                 {getActiveGoals().length > 0 ? (
                   getActiveGoals().map((goal) => (
                     <ExpansibleCard
-                      title={goal.title}
-                      description={goal.description}
                       key={goal.id}
-                      startDate={goal.startDate}
-                      endDate={goal.endDate}
-                      state={goal.state}
-                      onComplete={() => completeGoal(goal.id)}
+                      {...goal}
+                      id={goal.id}
+                      onComplete={() => handleComplete(goal)}
+                      style={{ width: "100%", textAlign: "left" }}
+                      onDelete={() => handleDelete(goal.id)}
                     />
                   ))
                 ) : (

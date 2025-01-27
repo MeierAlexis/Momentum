@@ -123,6 +123,7 @@
   color: white;
   text-align: center;
   max-width: 400px;
+  max-height: 300px;
 }
 
 .Notes textarea {

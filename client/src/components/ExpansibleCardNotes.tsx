@@ -61,21 +61,19 @@ export function ExpansibleCardNotes(props: ExpansibleCardNotesProps) {
 
       <motion.div
         className={`ExpansibleCard ${
-          isExpanded ? "ExpandedCard" : "ClosedCard"
+          isExpanded ? "ExpandedCardNotes" : "ClosedCardNotes"
         }`}
         style={{
           width: isExpanded ? "50rem" : "100%", // Más grande cuando está expandida
           position: isExpanded ? "fixed" : "relative",
-          top: isExpanded ? "50%" : "auto",
-          left: isExpanded ? "50%" : "auto",
+          top: isExpanded ? "30%" : "auto",
+          left: isExpanded ? "30%" : "auto",
           transform: isExpanded ? "translate(-50%, -50%)" : "none",
           zIndex: isExpanded ? 1000 : 1,
-          padding: isExpanded ? "3rem" : "1rem", // Más padding cuando está expandida
+          padding: isExpanded ? "3rem" : "0.2rem", // Más padding cuando está expandida
           borderRadius: "12px", // Bordes más redondeados
-          backgroundColor: "#1e1e1e", // Fondo más oscuro
-          boxShadow: isExpanded
-            ? "0 8px 16px rgba(0, 0, 0, 0.3)"
-            : "0 4px 8px rgba(0, 0, 0, 0.2)", // Sombra más pronunciada
+          backgroundColor: "#191919", // Fondo más oscuro
+          textAlign: "left",
         }}
         onClick={() => setIsExpanded(!isExpanded)}
         initial={false}
@@ -87,7 +85,7 @@ export function ExpansibleCardNotes(props: ExpansibleCardNotesProps) {
         <h3
           style={{
             fontWeight: 600,
-            fontSize: isExpanded ? "4rem" : "2rem", // Tamaño de fuente más grande
+            fontSize: isExpanded ? "4rem" : "1.2rem", // Tamaño de fuente más grande
             color: "#ffffff", // Texto blanco
             marginBottom: isExpanded ? "2rem" : "1rem", // Más margen inferior
           }}

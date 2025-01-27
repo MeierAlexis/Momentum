@@ -1,17 +1,17 @@
+import { useState, useEffect, useCallback } from "react";
+import { useGoalHabit } from "../context/GoalHabitContext.tsx";
 import { SideBar } from "../components/SideBar";
 import "../styles/Goals.css";
 import { initialHabits, initialUpdates } from "../../data/InitialData.tsx";
-import { useState, useEffect } from "react";
 import { ExpansibleCard } from "../components/ExpansibleCard.tsx";
 import { ChartProgression } from "../components/ChartProgression.tsx";
 import { CustomPieChart } from "../components/CustomPieChart.tsx";
 import { ProgressBar } from "../components/ProgressBar.tsx";
 import { ExpansibleCardInput } from "../components/ExpansibleCardInput.tsx";
-import { GoalData, GoalUpdate } from "../interfaces/GoalData";
-import { HabitData } from "../interfaces/HabitData.ts";
-import { useGoalHabit } from "../context/GoalHabitContext.tsx";
 import { ExpansibleCardNotes } from "../components/ExpansibleCardNotes.tsx";
 import { ExpansibleCardInputNotes } from "../components/ExpansibleCardInputNotes.tsx";
+import { GoalData, GoalUpdate } from "../interfaces/GoalData";
+import { HabitData } from "../interfaces/HabitData.ts";
 import { NoteData } from "../interfaces/NoteData.ts";
 
 export function Goals() {
@@ -25,7 +25,7 @@ export function Goals() {
   const { getGoals, updateGoal, deleteGoal, createNote, deleteNote, getNotes } =
     useGoalHabit();
 
-  // Obtener las metas al cargar el componente
+  // Obtener las metas al cargar el componente (solo una vez)
   useEffect(() => {
     const fetchGoals = async () => {
       try {
@@ -37,30 +37,31 @@ export function Goals() {
     };
 
     fetchGoals();
-  }, [getGoals]);
+  }, []); // Array vacío para que se ejecute solo una vez
 
-  // useEffect(() => {
-  //   const fetchNotes = async () => {
-  //     try {
-  //       for (const goal of goals) {
-  //         const notesData = await getNotes(goal.id); // se ejecuta muchas veces, revisar
-  //         setNotes(notesData.notes);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error al obtener las notas:", error);
-  //     }
-  //   };
+  // Obtener las notas de las metas cuando `goals` cambie
+  useEffect(() => {
+    const fetchNotes = async () => {
+      try {
+        const allNotes: NoteData[] = [];
+        for (const goal of goals) {
+          const notesData = await getNotes(goal.id);
+          allNotes.push(...notesData.data); // Acumula las notas
+        }
+        setNotes(allNotes); // Actualiza el estado una sola vez
+      } catch (error) {
+        console.error("Error al obtener las notas:", error);
+      }
+    };
 
-  //   fetchNotes();
-  // }, [getNotes, goals]);
+    if (goals.length > 0) {
+      fetchNotes();
+    }
+  }, [goals]); // Dependencia: goals
 
-  function getActiveGoals() {
-    return goals.filter((goal) => !goal.state);
-  }
+  const getActiveGoals = () => goals.filter((goal) => !goal.state);
+  const getCompletedGoals = () => goals.filter((goal) => goal.state);
 
-  const getCompletedGoals = () => {
-    return goals.filter((goal) => goal.state);
-  };
   const getProgressData = (goalId: string) => {
     return updates
       .filter((update) => update.id_goal === goalId)
@@ -79,7 +80,7 @@ export function Goals() {
   const handleDelete = (goalID: string) => {
     try {
       deleteGoal(goalID);
-      setGoals([...goals.filter((goal) => goal.id !== goalID)]);
+      setGoals((prevGoals) => prevGoals.filter((goal) => goal.id !== goalID));
     } catch (error) {
       console.error("Something went wrong:", error);
     }
@@ -95,7 +96,6 @@ export function Goals() {
       <SideBar />
       <div className="Goals">
         <h2 className="GoalsTitle">Goals</h2>
-
         <div className="GoalAnalytics">
           <div className="GoalsContainer">
             {/* Active Goals */}
@@ -106,7 +106,7 @@ export function Goals() {
                   key={goal.id}
                   {...goal}
                   onComplete={() => handleComplete(goal)}
-                  onDelete={() => handleDelete(goal)}
+                  onDelete={() => handleDelete(goal.id)}
                 />
               ))}
               <button
@@ -137,7 +137,7 @@ export function Goals() {
                   key={goal.id}
                   {...goal}
                   id={goal.id}
-                  onComplete={() => handleDelete(goal)}
+                  onComplete={() => handleDelete(goal.id)}
                   onDelete={() => handleDelete(goal.id)}
                 />
               ))}
@@ -178,12 +178,19 @@ export function Goals() {
               <div className="NotesProgress">
                 <div className="SquareDashboard Notes">
                   <h2>Notes</h2>
-
-                  {showFormNotes && <ExpansibleCardInputNotes />}
-                  <h5>Recent Notes</h5>
-                  {notes.map((note) => (
-                    <ExpansibleCardNotes key={note.id} {...note} />
-                  ))}
+                  <div
+                    style={{
+                      overflowY: "auto",
+                      overflowX: "hidden",
+                      scrollbarColor: "#ff5733 #333", // Standardized property for Firefox
+                      scrollbarWidth: "thin", // Standardized property for Firefox
+                    }}
+                  >
+                    {showFormNotes && <ExpansibleCardInputNotes />}
+                    {notes.map((note) => (
+                      <ExpansibleCardNotes key={note.id} {...note} />
+                    ))}
+                  </div>
                   <button
                     className="AddGoal"
                     onClick={() => setShowFormNotes(!showFormNotes)}
@@ -194,7 +201,6 @@ export function Goals() {
 
                 <div className="SquareDashboard ProgressGoals">
                   <h2>Last Progress Update</h2>
-
                   <button
                     className="AddGoal"
                     onClick={() => setShowForm(!showForm)}

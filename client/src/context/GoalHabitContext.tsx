@@ -182,7 +182,7 @@ export const GoalHabitProvider = ({
   const getNotes = async (id_goal: string) => {
     try {
       const Notes = await getNotesRequest(id_goal);
-      console.log("Las notas recuperadas:", Notes);
+      return Notes;
     } catch (error) {
       console.log("Something went wrong while fetching notes", error);
     }

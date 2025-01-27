@@ -17,6 +17,12 @@ import {
 
 import { GoalData, GoalUpdate } from "../interfaces/GoalData";
 import { HabitData } from "../interfaces/HabitData";
+import { NoteData } from "../interfaces/NoteData.ts";
+import {
+  getNotesRequest,
+  createNoteRequest,
+  deleteNoteRequest,
+} from "../api/note.ts";
 
 interface GoalHabitContextType {
   // State
@@ -41,6 +47,11 @@ interface GoalHabitContextType {
   ) => Promise<void>;
   deleteHabit: (habitId: string, goalId: string) => Promise<void>;
   getHabits: (goalId: string) => Promise<HabitData[]>;
+
+  //Notes Functions
+  createNote: (note: NoteData, id_goal: string) => Promise<void>;
+  getNotes: (id_goal: string) => Promise<NoteData[]>;
+  deleteNote: (id_note: string, id_goal: string) => Promise<void>;
 
   // Updates Functions
 
@@ -149,9 +160,41 @@ export const GoalHabitProvider = ({
       console.error("Something went wrong while updating habit", error);
     }
   };
-  const deleteHabit = async (habitId: string, goalId: string) => {};
+  const deleteHabit = async (habitId: string, goalId: string) => {
+    try {
+      await deleteHabitRequest(habitId, goalId);
+    } catch (error) {
+      console.error("Something went wrong while deleting habit", error);
+    }
+  };
   const UpdateProgress = async (progress: GoalUpdate) => {};
 
+  const createNote = async (note: NoteData, id_goal: string) => {
+    console.log(note, id_goal);
+    try {
+      const res = await createNoteRequest(note, id_goal);
+      console.log(res);
+    } catch (error) {
+      console.error("Something went wrong while creating note", error);
+    }
+  };
+
+  const getNotes = async (id_goal: string) => {
+    try {
+      const Notes = await getNotesRequest(id_goal);
+      console.log("Las notas recuperadas:", Notes);
+    } catch (error) {
+      console.log("Something went wrong while fetching notes", error);
+    }
+  };
+
+  const deleteNote = async (id: string, id_goal: string) => {
+    try {
+      await deleteNoteRequest(id, id_goal);
+    } catch (error) {
+      console.error("Something went wrong while deleting note", error);
+    }
+  };
   return (
     <GoalHabitContext.Provider
       value={{
@@ -168,6 +211,9 @@ export const GoalHabitProvider = ({
         getGoals,
         getGoal,
         getHabits,
+        getNotes,
+        createNote,
+        deleteNote,
       }}
     >
       {children}

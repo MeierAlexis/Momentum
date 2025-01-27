@@ -41,3 +41,12 @@ CREATE TABLE goal_update(
     progress DECIMAL(5,2) NOT NULL,
     constraint fk_goal_updates FOREIGN KEY (id_goal) REFERENCES goal(id)
 );
+
+CREATE TABLE notes (
+    id CHAR (36) PRIMARY KEY,
+    id_goal CHAR(36) NOT NULL,
+    date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    title VARCHAR(120) NOT NULL,
+    note VARCHAR(255) NOT NULL,
+    CONSTRAINT fk_goal_notes FOREIGN KEY (id_goal) REFERENCES goal(id)
+);          

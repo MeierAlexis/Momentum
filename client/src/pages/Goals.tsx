@@ -10,14 +10,20 @@ import { ExpansibleCardInput } from "../components/ExpansibleCardInput.tsx";
 import { GoalData, GoalUpdate } from "../interfaces/GoalData";
 import { HabitData } from "../interfaces/HabitData.ts";
 import { useGoalHabit } from "../context/GoalHabitContext.tsx";
+import { ExpansibleCardNotes } from "../components/ExpansibleCardNotes.tsx";
+import { ExpansibleCardInputNotes } from "../components/ExpansibleCardInputNotes.tsx";
+import { NoteData } from "../interfaces/NoteData.ts";
 
 export function Goals() {
   const [habits, setHabits] = useState<HabitData[]>(initialHabits);
   const [updates, setUpdates] = useState<GoalUpdate[]>(initialUpdates);
   const [showForm, setShowForm] = useState(false);
+  const [showFormNotes, setShowFormNotes] = useState(false);
   const [goals, setGoals] = useState<GoalData[]>([]);
+  const [notes, setNotes] = useState<NoteData[]>([]);
 
-  const { getGoals, updateGoal, deleteGoal } = useGoalHabit();
+  const { getGoals, updateGoal, deleteGoal, createNote, deleteNote, getNotes } =
+    useGoalHabit();
 
   // Obtener las metas al cargar el componente
   useEffect(() => {
@@ -32,6 +38,21 @@ export function Goals() {
 
     fetchGoals();
   }, [getGoals]);
+
+  // useEffect(() => {
+  //   const fetchNotes = async () => {
+  //     try {
+  //       for (const goal of goals) {
+  //         const notesData = await getNotes(goal.id); // se ejecuta muchas veces, revisar
+  //         setNotes(notesData.notes);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error al obtener las notas:", error);
+  //     }
+  //   };
+
+  //   fetchNotes();
+  // }, [getNotes, goals]);
 
   function getActiveGoals() {
     return goals.filter((goal) => !goal.state);
@@ -55,8 +76,13 @@ export function Goals() {
     return goalUpdates[goalUpdates.length - 1].progress;
   };
 
-  const handleDelete = (goal: GoalData) => {
-    deleteGoal(goal.id);
+  const handleDelete = (goalID: string) => {
+    try {
+      deleteGoal(goalID);
+      setGoals([...goals.filter((goal) => goal.id !== goalID)]);
+    } catch (error) {
+      console.error("Something went wrong:", error);
+    }
   };
 
   const handleComplete = (goal: GoalData) => {
@@ -112,7 +138,7 @@ export function Goals() {
                   {...goal}
                   id={goal.id}
                   onComplete={() => handleDelete(goal)}
-                  onDelete={() => handleDelete(goal)}
+                  onDelete={() => handleDelete(goal.id)}
                 />
               ))}
             </div>
@@ -149,10 +175,33 @@ export function Goals() {
                 />
                 <button className="AddGoal">Modify Wheel</button>
               </div>
-              <div className="SquareDashboard Notes">
-                <h2>Notes</h2>
-                <textarea placeholder="Add a note" className="Notes"></textarea>
-                <h5>Recent Notes</h5>
+              <div className="NotesProgress">
+                <div className="SquareDashboard Notes">
+                  <h2>Notes</h2>
+
+                  {showFormNotes && <ExpansibleCardInputNotes />}
+                  <h5>Recent Notes</h5>
+                  {notes.map((note) => (
+                    <ExpansibleCardNotes key={note.id} {...note} />
+                  ))}
+                  <button
+                    className="AddGoal"
+                    onClick={() => setShowFormNotes(!showFormNotes)}
+                  >
+                    <span>+</span> Add Note
+                  </button>
+                </div>
+
+                <div className="SquareDashboard ProgressGoals">
+                  <h2>Last Progress Update</h2>
+
+                  <button
+                    className="AddGoal"
+                    onClick={() => setShowForm(!showForm)}
+                  >
+                    <span>+</span> Add Progress
+                  </button>
+                </div>
               </div>
             </div>
 

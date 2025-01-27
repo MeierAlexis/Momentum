@@ -12,7 +12,8 @@ import { GoalData } from "../interfaces/GoalData.ts";
 import { ExpansibleCardInput } from "../components/ExpansibleCardInput.tsx";
 
 export function Dashboard() {
-  const { getGoals, updateGoal, deleteGoal } = useGoalHabit();
+  const { getGoals, updateGoal, deleteGoal, getHabits, deleteHabit } =
+    useGoalHabit();
 
   const [goals, setGoals] = useState([]);
   const [showForm, setShowForm] = useState(false);
@@ -56,12 +57,20 @@ export function Dashboard() {
     setQuote(randomQuote);
   }, []);
 
-  const handleDelete = (goalID: string) => {
+  const handleDelete = async (goalID: string) => {
     try {
-      deleteGoal(goalID);
-      setGoals([...goals.filter((goal) => goal.id !== goalID)]);
+      const res = await getHabits(goalID);
+      console.log(res);
+      const habits = res.habits;
+      console.log(habits);
+      for (const habit of habits) {
+        await deleteHabit(habit.id, goalID);
+      }
+
+      await deleteGoal(goalID);
+      setGoals(goals.filter((goal) => goal.id !== goalID));
     } catch (error) {
-      console.error("Something went wrong:", error);
+      console.error("Error al obtener las metas:", error);
     }
   };
 

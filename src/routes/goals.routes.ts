@@ -2,6 +2,7 @@ import { Router } from "express";
 import { authRequired } from "../middlewares/validateToken.ts";
 import { validationGoal } from "../middlewares/validateGoal.ts";
 import { validateHabit } from "../middlewares/validateHabit.ts";
+import { validateNote } from "../middlewares/validateNotes.ts";
 import {
   getGoals,
   createGoal,
@@ -12,7 +13,14 @@ import {
   createHabit,
   updateGoal,
   updateHabit,
+  updateProgress,
 } from "../controllers/goalsHabit.controllers.ts";
+import {
+  createNote,
+  getNotes,
+  deleteNote,
+} from "../controllers/notes.controllers.ts";
+import { validateProgress } from "../middlewares/validateProgress.ts";
 
 const router = Router();
 
@@ -23,12 +31,7 @@ router.delete("/goals/:id", authRequired, deleteGoal); // delete goal
 router.get("/goals/:id", authRequired, getGoal); // get goal
 
 router.get("/goals/:id/habits", authRequired, getHabitsByGoal); // get habits by goal
-router.delete(
-  "/goals/:id/habits/:id_habit",
-  authRequired,
-  validateHabit,
-  deleteHabitByGoal
-); // delete habit by goal
+router.delete("/goals/:id/habits/:id_habit", authRequired, deleteHabitByGoal); // delete habit by goal
 router.post("/goals/:id/habits", authRequired, validateHabit, createHabit); // create habit
 
 router.put(
@@ -37,5 +40,17 @@ router.put(
   validateHabit,
   updateHabit
 ); //update habit
+
+router.post(
+  "/goals/:id/progress",
+  authRequired,
+  validateProgress,
+  updateProgress
+);
+
+// notes routes
+router.post("/goals/:id_goal/notes", authRequired, validateNote, createNote);
+router.get("/goals/:id_goal/notes", authRequired, getNotes);
+router.delete("/goals/:id_goal/notes/:id", authRequired, deleteNote);
 
 export default router;

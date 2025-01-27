@@ -73,9 +73,9 @@ export const createGoal = async (req, res) => {
 
 export const deleteGoal = async (req, res) => {
   const { id } = req.params;
-
+  console.log("Id:", id);
   try {
-    const result = await pool.query("DELETE FROM goal WHERE id = $1", [id]);
+    await pool.query("DELETE FROM goal WHERE id = $1", [id]);
     res.status(200).json({
       success: true,
       message: "Goal deleted successfully",
@@ -165,11 +165,11 @@ export const createHabit = async (req, res) => {
 
 export const deleteHabitByGoal = async (req, res) => {
   const { id: id_goal, id_habit } = req.params;
-
+  console.log("id_goal", id_goal, "id_habit", id_habit);
   try {
     const result = await pool.query(
-      "DELETE * FROM habit WHERE id_goal = $1 AND id = $2",
-      [id_goal, id_habit]
+      "DELETE FROM habit WHERE id_goal = $1 AND id = $2",
+      [id_habit, id_goal]
     );
     res.status(200).json({
       success: true,
@@ -204,6 +204,24 @@ export const getHabitsByGoal = async (req, res) => {
   }
 };
 
+export const updateProgress = async (req, res) => {
+  const { id: id_goal } = req.params;
+  const { date, progress } = req.body;
+
+  try {
+    const result = await pool.query(
+      "INSERT INTO goal_update (date, progress, id_goal) VALUES ($1, $2, $3) RETURNING *",
+      [date, progress, id_goal]
+    );
+
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error("Error updating progress:", error);
+    res
+      .status(500)
+      .json({ message: "Something went wrong while updating progress" });
+  }
+};
 export const updateHabit = async (req, res) => {
   const { id: id_goal, id_habit } = req.params;
   console.log(id_habit);

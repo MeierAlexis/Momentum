@@ -14,6 +14,7 @@ import {
   updateGoal,
   updateHabit,
   updateProgress,
+  getProgress,
 } from "../controllers/goalsHabit.controllers.ts";
 import {
   createNote,
@@ -52,5 +53,15 @@ router.post(
 router.post("/goals/:id_goal/notes", authRequired, validateNote, createNote);
 router.get("/goals/:id_goal/notes", authRequired, getNotes);
 router.delete("/goals/:id_goal/notes/:id", authRequired, deleteNote);
+
+// progress routes
+router.post(
+  "/goals/:id/progress",
+  authRequired,
+  validateProgress,
+  updateProgress
+);
+
+router.get("/goals/:id/progress", authRequired, getProgress);
 
 export default router;

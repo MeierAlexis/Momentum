@@ -1,8 +1,7 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useGoalHabit } from "../context/GoalHabitContext.tsx";
 import { SideBar } from "../components/SideBar";
 import "../styles/Goals.css";
-import { initialHabits, initialUpdates } from "../../data/InitialData.tsx";
 import { ExpansibleCard } from "../components/ExpansibleCard.tsx";
 import { ChartProgression } from "../components/ChartProgression.tsx";
 import { CustomPieChart } from "../components/CustomPieChart.tsx";
@@ -10,45 +9,57 @@ import { ProgressBar } from "../components/ProgressBar.tsx";
 import { ExpansibleCardInput } from "../components/ExpansibleCardInput.tsx";
 import { ExpansibleCardNotes } from "../components/ExpansibleCardNotes.tsx";
 import { ExpansibleCardInputNotes } from "../components/ExpansibleCardInputNotes.tsx";
-import { GoalData, GoalUpdate } from "../interfaces/GoalData";
-import { HabitData } from "../interfaces/HabitData.ts";
+import { GoalData } from "../interfaces/GoalData";
+import { ProgressData } from "../interfaces/ProgressData.ts";
 import { NoteData } from "../interfaces/NoteData.ts";
+import { AddProgressForm } from "../components/AddProgressForm.tsx";
+import confetti from "canvas-confetti";
 
 export function Goals() {
-  const [habits, setHabits] = useState<HabitData[]>(initialHabits);
-  const [updates, setUpdates] = useState<GoalUpdate[]>(initialUpdates);
+  const [updates, setUpdates] = useState<ProgressData[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [showFormNotes, setShowFormNotes] = useState(false);
   const [goals, setGoals] = useState<GoalData[]>([]);
   const [notes, setNotes] = useState<NoteData[]>([]);
+  const [selectedGoalId, setSelectedGoalId] = useState<string | null>(null);
+  const [selectedGoalProgressId, setSelectedGoalProgressId] = useState<
+    string | null
+  >(null);
+  const [showFormProgress, setShowFormProgress] = useState(false);
+  const {
+    getGoals,
+    updateGoal,
+    deleteGoal,
+    getNotes,
+    getProgress,
+    addProgress,
+  } = useGoalHabit();
 
-  const { getGoals, updateGoal, deleteGoal, createNote, deleteNote, getNotes } =
-    useGoalHabit();
-
-  // Obtener las metas al cargar el componente (solo una vez)
   useEffect(() => {
     const fetchGoals = async () => {
       try {
         const goalsData = await getGoals();
         setGoals(goalsData.goals);
+        if (goalsData.goals.length > 0) {
+          setSelectedGoalProgressId(goalsData.goals[0].id);
+        }
       } catch (error) {
         console.error("Error al obtener las metas:", error);
       }
     };
 
     fetchGoals();
-  }, []); // Array vacío para que se ejecute solo una vez
+  }, []);
 
-  // Obtener las notas de las metas cuando `goals` cambie
   useEffect(() => {
     const fetchNotes = async () => {
       try {
         const allNotes: NoteData[] = [];
         for (const goal of goals) {
           const notesData = await getNotes(goal.id);
-          allNotes.push(...notesData.data); // Acumula las notas
+          allNotes.push(...notesData.data);
         }
-        setNotes(allNotes); // Actualiza el estado una sola vez
+        setNotes(allNotes);
       } catch (error) {
         console.error("Error al obtener las notas:", error);
       }
@@ -57,12 +68,31 @@ export function Goals() {
     if (goals.length > 0) {
       fetchNotes();
     }
-  }, [goals]); // Dependencia: goals
+  }, [goals]);
+
+  useEffect(() => {
+    const fetchProgress = async () => {
+      try {
+        const allProgress: ProgressData[] = [];
+        for (const goal of goals) {
+          const progressData = await getProgress(goal.id);
+          allProgress.push(...progressData.progress);
+        }
+        setUpdates(allProgress);
+      } catch (error) {
+        console.error("Error al obtener el progreso:", error);
+      }
+    };
+
+    if (goals.length > 0) {
+      fetchProgress();
+    }
+  }, [goals]);
 
   const getActiveGoals = () => goals.filter((goal) => !goal.state);
   const getCompletedGoals = () => goals.filter((goal) => goal.state);
 
-  const getProgressData = (goalId: string) => {
+  const getProgressChartData = (goalId: string) => {
     return updates
       .filter((update) => update.id_goal === goalId)
       .map((update) => ({
@@ -88,7 +118,12 @@ export function Goals() {
 
   const handleComplete = (goal: GoalData) => {
     goal.state = true;
+    confetti();
     updateGoal(goal);
+  };
+
+  const handleGoalChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedGoalProgressId(e.target.value);
   };
 
   return (
@@ -98,7 +133,6 @@ export function Goals() {
         <h2 className="GoalsTitle">Goals</h2>
         <div className="GoalAnalytics">
           <div className="GoalsContainer">
-            {/* Active Goals */}
             <div className="SquareDashboard ActiveGoals">
               <h2>Active Goals</h2>
               {getActiveGoals().map((goal) => (
@@ -182,8 +216,8 @@ export function Goals() {
                     style={{
                       overflowY: "auto",
                       overflowX: "hidden",
-                      scrollbarColor: "#ff5733 #333", // Standardized property for Firefox
-                      scrollbarWidth: "thin", // Standardized property for Firefox
+                      scrollbarColor: "#ff5733 #333",
+                      scrollbarWidth: "thin",
                     }}
                   >
                     {showFormNotes && <ExpansibleCardInputNotes />}
@@ -201,21 +235,65 @@ export function Goals() {
 
                 <div className="SquareDashboard ProgressGoals">
                   <h2>Last Progress Update</h2>
+                  {updates.length === 0 && (
+                    <p
+                      style={{
+                        color: "#ddd",
+                        fontSize: "16px",
+                        margin: "10px 10px",
+                      }}
+                    >
+                      No progress updates yet
+                    </p>
+                  )}
+                  {updates.length > 0 && (
+                    <p
+                      style={{
+                        color: "#ddd",
+                        fontSize: "35px",
+                        margin: "10px 10px",
+                        alignSelf: "center",
+                      }}
+                    >
+                      {new Date(
+                        updates[updates.length - 1].date
+                      ).toLocaleDateString()}
+                    </p>
+                  )}
                   <button
                     className="AddGoal"
-                    onClick={() => setShowForm(!showForm)}
+                    onClick={() => setShowFormProgress(!showFormProgress)}
+                    style={{
+                      marginRight: "20px",
+                    }}
                   >
                     <span>+</span> Add Progress
                   </button>
+                  {showFormProgress && (
+                    <AddProgressForm
+                      goals={goals}
+                      selectedGoalId={selectedGoalId}
+                      onSelectGoal={setSelectedGoalId}
+                    />
+                  )}
                 </div>
               </div>
             </div>
 
             {goals.length > 0 && (
               <div className="SquareDashboard GoalProgress">
-                <h2>Progress: {goals[0].title}</h2>
+                <select
+                  value={selectedGoalProgressId || ""}
+                  onChange={handleGoalChange}
+                >
+                  {getActiveGoals().map((goal) => (
+                    <option key={goal.id} value={goal.id}>
+                      {goal.title || "Goal"}
+                    </option>
+                  ))}
+                </select>
                 <ChartProgression
-                  data={getProgressData(goals[0].id)}
+                  data={getProgressChartData(selectedGoalProgressId || "")}
                   view={"Week"}
                   height={200}
                 />

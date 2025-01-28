@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   AreaChart,
   Area,
@@ -26,6 +26,24 @@ export const ChartProgression: React.FC<AreaChartExampleProps> = ({
   view,
   height,
 }) => {
+  const [formattedData, setFormattedData] = useState<DataPoint[]>([]);
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const day = date.getDate();
+    const month = date.toLocaleString("default", { month: "short" }); // Nombre abreviado del mes
+    const year = date.getFullYear();
+    return `${day} ${month} ${year}`;
+  };
+
+  useEffect(() => {
+    const formattedData = data.map((item) => ({
+      ...item,
+      date: formatDate(item.date),
+    }));
+    setFormattedData(formattedData);
+  }, [data]);
+
   return (
     <div
       style={{
@@ -51,7 +69,7 @@ export const ChartProgression: React.FC<AreaChartExampleProps> = ({
       </div>
       <ResponsiveContainer>
         <AreaChart
-          data={data}
+          data={formattedData}
           margin={{
             top: 5,
             right: 30,
@@ -59,13 +77,18 @@ export const ChartProgression: React.FC<AreaChartExampleProps> = ({
             bottom: 5,
           }}
         >
-          <XAxis dataKey="date" tickMargin={10} />
+          <XAxis
+            dataKey="date"
+            tickMargin={10}
+            height={50} // Ajusta la altura para acomodar las etiquetas rotadas
+          />
           <YAxis tickMargin={10} />
           <Tooltip />
           <Area
             type="natural"
             dataKey="completed"
             stroke="#ff5733"
+            name="Progress"
             fill="rgba(255, 87, 51, 0.1)"
             strokeWidth={3}
             activeDot={{ r: 10 }}

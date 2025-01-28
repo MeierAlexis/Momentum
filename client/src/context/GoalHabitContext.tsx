@@ -6,6 +6,8 @@ import {
   deleteGoalRequest,
   getGoalsRequest,
   getGoalRequest,
+  addProgressRequest,
+  getProgressRequest,
 } from "../api/goal.ts";
 
 import {
@@ -15,7 +17,8 @@ import {
   deleteHabitRequest,
 } from "../api/habit.ts";
 
-import { GoalData, GoalUpdate } from "../interfaces/GoalData";
+import { GoalData } from "../interfaces/GoalData";
+import { ProgressData } from "../interfaces/ProgressData.ts";
 import { HabitData } from "../interfaces/HabitData";
 import { NoteData } from "../interfaces/NoteData.ts";
 import {
@@ -55,7 +58,8 @@ interface GoalHabitContextType {
 
   // Updates Functions
 
-  UpdateProgress(progress: GoalUpdate): Promise<void>;
+  addProgress(progress: ProgressData, id_goal: string): Promise<void>;
+  getProgress(id_goal: string): Promise<ProgressData[]>;
 }
 
 export const GoalHabitContext = createContext<GoalHabitContextType | null>(
@@ -167,7 +171,21 @@ export const GoalHabitProvider = ({
       console.error("Something went wrong while deleting habit", error);
     }
   };
-  const UpdateProgress = async (progress: GoalUpdate) => {};
+  const addProgress = async (progress: ProgressData, id_goal: string) => {
+    try {
+      await addProgressRequest(progress, id_goal);
+    } catch (error) {
+      console.error("Something went wrong while updating progress", error);
+    }
+  };
+  const getProgress = async (id_goal: string) => {
+    try {
+      const res = await getProgressRequest(id_goal);
+      return res.data;
+    } catch (error) {
+      console.error("Something went wrong while fetching progress", error);
+    }
+  };
 
   const createNote = async (note: NoteData, id_goal: string) => {
     console.log(note, id_goal);
@@ -207,7 +225,8 @@ export const GoalHabitProvider = ({
         addHabit,
         updateHabit,
         deleteHabit,
-        UpdateProgress,
+        addProgress,
+        getProgress,
         getGoals,
         getGoal,
         getHabits,

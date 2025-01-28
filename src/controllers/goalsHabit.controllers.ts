@@ -206,12 +206,13 @@ export const getHabitsByGoal = async (req, res) => {
 
 export const updateProgress = async (req, res) => {
   const { id: id_goal } = req.params;
-  const { date, progress } = req.body;
-
+  const { progress } = req.body;
+  const date = new Date().toISOString();
+  const id = crypto.randomUUID();
   try {
     const result = await pool.query(
-      "INSERT INTO goal_update (date, progress, id_goal) VALUES ($1, $2, $3) RETURNING *",
-      [date, progress, id_goal]
+      "INSERT INTO goal_update (id,date, progress, id_goal) VALUES ($1,$2, $3, $4) RETURNING *",
+      [id, date, progress, id_goal]
     );
 
     res.status(201).json(result.rows[0]);
@@ -242,6 +243,26 @@ export const updateHabit = async (req, res) => {
     return res.status(500).json({
       message: "An error ocurred while updating the habit",
       success: false,
+    });
+  }
+};
+
+export const getProgress = async (req, res) => {
+  const { id: id_goal } = req.params;
+  try {
+    const result = await pool.query(
+      "SELECT * FROM goal_update WHERE id_goal = $1",
+      [id_goal]
+    );
+    return res.status(200).json({
+      success: true,
+      message: "Get progress",
+      progress: result.rows,
+    });
+  } catch (err) {
+    return res.status(404).json({
+      success: false,
+      message: "Progress not found",
     });
   }
 };

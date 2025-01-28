@@ -10,7 +10,7 @@ export const validateProgress = (req, res, next) => {
       return res.status(400).json({
         error: error.issues,
         sucess: false,
-        message: "Validation of Habit failed",
+        message: "Validation of Progress failed",
       });
       res.status(500).json({
         success: false,

@@ -26,8 +26,7 @@ export function ExpansibleCardNotes(props: ExpansibleCardNotesProps) {
   useEffect(() => {
     const getNotesByGoal = async () => {
       try {
-        const NotesData = await getNotes(id_goal);
-        console.log(NotesData);
+        await getNotes(id_goal);
       } catch (error) {
         console.error("Error al obtener las notas:", error);
       }

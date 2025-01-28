@@ -22,7 +22,7 @@ export function Dashboard() {
   const initialGoals = async () => {
     try {
       const goalsData = await getGoals();
-      console.log(goalsData);
+
       setGoals(goalsData.goals);
     } catch (error) {
       console.error("Error fetching goals:", error);

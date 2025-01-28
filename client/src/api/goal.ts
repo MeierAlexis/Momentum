@@ -1,4 +1,5 @@
 import { GoalData } from "../interfaces/GoalData";
+import { ProgressData } from "../interfaces/ProgressData";
 
 import axios from "./axios";
 
@@ -12,3 +13,9 @@ export const updateGoalRequest = (goal: GoalData) =>
 export const getGoalsRequest = () => axios.get(`/goals`);
 
 export const getGoalRequest = (goalId: string) => axios.get(`/goals/${goalId}`);
+
+export const addProgressRequest = (progress: ProgressData, id_goal: string) =>
+  axios.post(`/goals/${id_goal}/progress`, progress);
+
+export const getProgressRequest = (id_goal: string) =>
+  axios.get(`/goals/${id_goal}/progress`);

@@ -37,7 +37,6 @@ export function ExpansibleCard(
     const getHabitsByGoalId = async () => {
       try {
         const HabitData = await getHabits(id);
-        console.log(HabitData);
         setHabits(HabitData.habits);
       } catch (error) {
         console.error("Error al obtener las metas:", error);

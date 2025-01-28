@@ -54,7 +54,6 @@ export function Tracker() {
   const initialGoals = async () => {
     try {
       const goalsData = await getGoals();
-      console.log(goalsData);
       setGoals(goalsData.goals);
     } catch (error) {
       console.error("Error fetching goals:", error);
@@ -64,7 +63,7 @@ export function Tracker() {
   const HandleCompleteHabit = async (habit: HabitData, goalId: string) => {
     habit.state = true;
     habit.completed += 1;
-    console.log(habit);
+
     try {
       await updateHabit(habit, goalId);
     } catch (error) {
@@ -96,7 +95,6 @@ export function Tracker() {
   }, [goals]);
 
   function getHabitsByGoal() {
-    console.log(goals, habits);
     if (!goals || !habits) return [];
 
     return goals

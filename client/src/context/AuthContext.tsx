@@ -10,7 +10,7 @@ import Cookie from "js-cookie";
 
 interface AuthContextType {
   user: UserRegister | UserLogin | null;
-  signup: (user: UserRegister) => Promise<void>;
+  signup: (user: UserRegister) => Promise<bool>;
   login: (user: UserLogin) => Promise<void>;
   logout: () => void;
   isAuthenticated: boolean;
@@ -42,15 +42,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const signup = async (userData: UserRegister) => {
     try {
       const res = await registerRequest(userData);
+
       setUser(res.data);
       setIsAuthenticated(true);
       setErrors([]);
+      return true;
     } catch (error: any) {
       setErrors(
         error.response?.data?.message
           ? [error.response.data.message]
           : ["Unexpected error"]
       );
+      return false;
     }
   };
 

@@ -1,5 +1,9 @@
 import { createContext, useState, useContext } from "react";
-
+import {
+  createWheelRequest,
+  updateWheelRequest,
+  getWheelRequest,
+} from "../api/wheel.ts";
 import {
   addGoalRequest,
   updateGoalRequest,
@@ -8,6 +12,7 @@ import {
   getGoalRequest,
   addProgressRequest,
   getProgressRequest,
+  deleteProgressRequest,
 } from "../api/goal.ts";
 
 import {
@@ -15,6 +20,7 @@ import {
   getHabitsRequest,
   updateHabitRequest,
   deleteHabitRequest,
+  deleteHabitsRequest,
 } from "../api/habit.ts";
 
 import { GoalData } from "../interfaces/GoalData";
@@ -25,7 +31,9 @@ import {
   getNotesRequest,
   createNoteRequest,
   deleteNoteRequest,
+  deleteNotesRequest,
 } from "../api/note.ts";
+import { WheelOfLifeData } from "../interfaces/WheelOfLifeData.ts";
 
 interface GoalHabitContextType {
   // State
@@ -50,16 +58,24 @@ interface GoalHabitContextType {
   ) => Promise<void>;
   deleteHabit: (habitId: string, goalId: string) => Promise<void>;
   getHabits: (goalId: string) => Promise<HabitData[]>;
+  deleteHabits: (goalId: string) => Promise<void>;
 
   //Notes Functions
   createNote: (note: NoteData, id_goal: string) => Promise<void>;
   getNotes: (id_goal: string) => Promise<NoteData[]>;
   deleteNote: (id_note: string, id_goal: string) => Promise<void>;
+  deleteNotes: (id_goal: string) => Promise<void>;
 
   // Updates Functions
 
   addProgress(progress: ProgressData, id_goal: string): Promise<void>;
   getProgress(id_goal: string): Promise<ProgressData[]>;
+  deleteProgress(id_goal: string): Promise<void>;
+
+  // Wheel Functions
+  createWheel: (wheel: WheelOfLifeData) => Promise<void>;
+  updateWheel: (wheel: WheelOfLifeData) => Promise<void>;
+  getWheel: () => Promise<WheelOfLifeData>;
 }
 
 export const GoalHabitContext = createContext<GoalHabitContextType | null>(
@@ -171,6 +187,15 @@ export const GoalHabitProvider = ({
       console.error("Something went wrong while deleting habit", error);
     }
   };
+
+  const deleteHabits = async (goalID: string) => {
+    try {
+      await deleteHabitsRequest(goalID);
+    } catch (error) {
+      console.error("Something went wrong while deleting habits", error);
+    }
+  };
+
   const addProgress = async (progress: ProgressData, id_goal: string) => {
     try {
       await addProgressRequest(progress, id_goal);
@@ -184,6 +209,14 @@ export const GoalHabitProvider = ({
       return res.data;
     } catch (error) {
       console.error("Something went wrong while fetching progress", error);
+    }
+  };
+
+  const deleteProgress = async (id_goal: string) => {
+    try {
+      await deleteProgressRequest(id_goal);
+    } catch (error) {
+      console.log("Something went wrong while deleting progress", error);
     }
   };
 
@@ -213,6 +246,40 @@ export const GoalHabitProvider = ({
       console.error("Something went wrong while deleting note", error);
     }
   };
+
+  const deleteNotes = async (id_goal: string) => {
+    try {
+      await deleteNotesRequest(id_goal);
+    } catch (error) {
+      console.error("Something went wrong while deleting notes", error);
+    }
+  };
+
+  const createWheel = async (wheel: WheelOfLifeData) => {
+    try {
+      await createWheelRequest(wheel);
+    } catch (error) {
+      console.error("Something went wrong while creating wheel", error);
+    }
+  };
+
+  const getWheel = async () => {
+    try {
+      const res = await getWheelRequest();
+      return res.data;
+    } catch (error) {
+      console.error("Something went wrong while fetching wheel", error);
+    }
+  };
+
+  const updateWheel = async (wheel: WheelOfLifeData) => {
+    try {
+      const res = await updateWheelRequest(wheel);
+      console.log(res);
+    } catch (error) {
+      console.error("Something went wrong while updating wheel", error);
+    }
+  };
   return (
     <GoalHabitContext.Provider
       value={{
@@ -233,6 +300,12 @@ export const GoalHabitProvider = ({
         getNotes,
         createNote,
         deleteNote,
+        createWheel,
+        getWheel,
+        updateWheel,
+        deleteNotes,
+        deleteHabits,
+        deleteProgress,
       }}
     >
       {children}

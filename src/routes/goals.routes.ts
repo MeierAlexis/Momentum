@@ -15,11 +15,17 @@ import {
   updateHabit,
   updateProgress,
   getProgress,
+  createWheel,
+  updateWheel,
+  getWheel,
+  deleteHabits,
+  deleteProgress,
 } from "../controllers/goalsHabit.controllers.ts";
 import {
   createNote,
   getNotes,
   deleteNote,
+  deleteNotes,
 } from "../controllers/notes.controllers.ts";
 import { validateProgress } from "../middlewares/validateProgress.ts";
 
@@ -34,6 +40,7 @@ router.get("/goals/:id", authRequired, getGoal); // get goal
 router.get("/goals/:id/habits", authRequired, getHabitsByGoal); // get habits by goal
 router.delete("/goals/:id/habits/:id_habit", authRequired, deleteHabitByGoal); // delete habit by goal
 router.post("/goals/:id/habits", authRequired, validateHabit, createHabit); // create habit
+router.delete("/goals/:id_goal/habits", authRequired, deleteHabits);
 
 router.put(
   "/goals/:id/habits/:id_habit",
@@ -53,6 +60,7 @@ router.post(
 router.post("/goals/:id_goal/notes", authRequired, validateNote, createNote);
 router.get("/goals/:id_goal/notes", authRequired, getNotes);
 router.delete("/goals/:id_goal/notes/:id", authRequired, deleteNote);
+router.delete("/goals/:id_goal/notes", authRequired, deleteNotes);
 
 // progress routes
 router.post(
@@ -63,5 +71,12 @@ router.post(
 );
 
 router.get("/goals/:id/progress", authRequired, getProgress);
+router.delete("/goals/:id/progress", authRequired, deleteProgress);
+
+// wheel routes
+
+router.get("/wheel", authRequired, getWheel);
+router.post("/wheel", authRequired, createWheel);
+router.put("/wheel", authRequired, updateWheel);
 
 export default router;

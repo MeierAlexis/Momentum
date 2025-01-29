@@ -12,11 +12,13 @@ import { useNavigate } from "react-router";
 import { useAuth } from "../context/AuthContext.tsx";
 import { UserRegister } from "../interfaces/auth.ts";
 import { useEffect } from "react";
+import { useGoalHabit } from "../context/GoalHabitContext.tsx";
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { signup, isAuthenticated, errors: AuthErrors } = useAuth();
+  const { createWheel } = useGoalHabit();
   const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
@@ -45,8 +47,20 @@ export default function Register() {
 
   // Manejo de formulario asíncrono
   const onSubmit = async (data: UserRegister) => {
-    console.log(data);
-    signup(data);
+    const user = await signup(data);
+    if (user) {
+      const initialWheel = {
+        friends: 0,
+        health: 0,
+        fun: 0,
+        career: 0,
+        money: 0,
+        love: 0,
+        family: 0,
+        spirituality: 0,
+      };
+      await createWheel(initialWheel);
+    }
   };
 
   return (

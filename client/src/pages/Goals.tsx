@@ -14,6 +14,7 @@ import { ProgressData } from "../interfaces/ProgressData.ts";
 import { NoteData } from "../interfaces/NoteData.ts";
 import { AddProgressForm } from "../components/AddProgressForm.tsx";
 import confetti from "canvas-confetti";
+import { WheelOfLifeForm } from "../components/WheelOfLifeForm.tsx";
 
 export function Goals() {
   const [updates, setUpdates] = useState<ProgressData[]>([]);
@@ -32,9 +33,15 @@ export function Goals() {
     deleteGoal,
     getNotes,
     getProgress,
-    addProgress,
+    getWheel,
+    deleteHabits,
+    deleteProgress,
+    deleteNotes,
   } = useGoalHabit();
 
+  const [showFormWheel, setShowFormWheel] = useState(false);
+
+  const [wheel, setWheel] = useState<number[] | null>(null);
   useEffect(() => {
     const fetchGoals = async () => {
       try {
@@ -49,6 +56,39 @@ export function Goals() {
     };
 
     fetchGoals();
+  }, []);
+  useEffect(() => {
+    const fetchWheel = async () => {
+      try {
+        const wheelData = await getWheel();
+
+        const {
+          career,
+          family,
+          friends,
+          fun,
+          health,
+          love,
+          money,
+          spirituality,
+        } = wheelData.wheel[0];
+        const arrayWheelData = [
+          friends,
+          fun,
+          money,
+          family,
+          spirituality,
+          love,
+          career,
+          health,
+        ];
+        setWheel(arrayWheelData);
+      } catch (error) {
+        console.error("Error fetching wheel:", error);
+      }
+    };
+
+    fetchWheel();
   }, []);
 
   useEffect(() => {
@@ -107,10 +147,22 @@ export function Goals() {
     return goalUpdates[goalUpdates.length - 1].progress;
   };
 
-  const handleDelete = (goalID: string) => {
+  const handleDelete = async (goalID: string) => {
     try {
-      deleteGoal(goalID);
+      await deleteHabits(goalID);
+      await deleteProgress(goalID);
+      await deleteNotes(goalID);
+      await deleteGoal(goalID);
       setGoals((prevGoals) => prevGoals.filter((goal) => goal.id !== goalID));
+      setHabits((prevHabits) =>
+        prevHabits.filter((habit) => habit.id_goal !== goalID)
+      );
+      setNotes((prevNotes) =>
+        prevNotes.filter((note) => note.id_goal !== goalID)
+      );
+      setUpdates((prevUpdates) =>
+        prevUpdates.filter((update) => update.id_goal !== goalID)
+      );
     } catch (error) {
       console.error("Something went wrong:", error);
     }
@@ -197,7 +249,7 @@ export function Goals() {
                     datasets: [
                       {
                         label: "Life Balance",
-                        data: [0, 8, 5, 8, 0, 8, 5, 8],
+                        data: wheel ? wheel : [0, 0, 0, 0, 0, 0, 0, 0],
                         backgroundColor: "rgba(255, 87, 51, 0.2)",
                         borderColor: "#ff5733",
                         borderWidth: 3,
@@ -207,7 +259,13 @@ export function Goals() {
                     height: 400,
                   }}
                 />
-                <button className="AddGoal">Modify Wheel</button>
+                <button
+                  className="AddGoal"
+                  onClick={() => setShowFormWheel(!showFormWheel)}
+                >
+                  Modify Wheel
+                </button>
+                {showFormWheel && <WheelOfLifeForm />}
               </div>
               <div className="NotesProgress">
                 <div className="SquareDashboard Notes">

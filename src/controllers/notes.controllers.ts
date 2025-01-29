@@ -51,3 +51,17 @@ export const deleteNote = async (req, res) => {
     res.status(500).json({ error: "Something went wrong" });
   }
 };
+
+export const deleteNotes = async (req, res) => {
+  const { id_goal } = req.params;
+
+  try {
+    await pool.query("DELETE FROM notes WHERE id_goal =$1", [id_goal]);
+    res.status(200).json({
+      message: "All notes deleted",
+    });
+  } catch (error) {
+    console.error("Something went wrong while deleting notes", error);
+    res.status(500).json({ error: "Something went wrong" });
+  }
+};

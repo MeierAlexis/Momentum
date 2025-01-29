@@ -9,3 +9,6 @@ export const getNotesRequest = (id_goal: string) =>
 
 export const deleteNoteRequest = (id_note: string, id_goal: string) =>
   axios.delete(`/goals/${id_goal}/notes/${id_note}`);
+
+export const deleteNotesRequest = (id_goal: string) =>
+  axios.delete(`/goals/${id_goal}/notes`);

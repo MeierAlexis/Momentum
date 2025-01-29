@@ -225,7 +225,7 @@ export const updateProgress = async (req, res) => {
 };
 export const updateHabit = async (req, res) => {
   const { id: id_goal, id_habit } = req.params;
-  console.log(id_habit);
+
   const { goal_per_week, title, state, days, completed } = req.body;
 
   try {
@@ -263,6 +263,143 @@ export const getProgress = async (req, res) => {
     return res.status(404).json({
       success: false,
       message: "Progress not found",
+    });
+  }
+};
+
+export const deleteProgress = async (req, res) => {
+  const { id: id_goal } = req.params;
+
+  try {
+    await pool.query("DELETE FROM goal_update WHERE id_goal = $1", [id_goal]);
+
+    return res.status(200).json({
+      success: true,
+      message: "Delete progress",
+    });
+  } catch (err) {
+    return res.status(404).json({
+      success: false,
+      message: "Progress not found",
+    });
+  }
+};
+
+export const deleteHabits = async (req, res) => {
+  const { id_goal } = req.params;
+
+  try {
+    await pool.query("DELETE FROM habit WHERE id_goal = $1", [id_goal]);
+
+    res.status(200).json({
+      success: true,
+      message: "Deleted all habits",
+    });
+  } catch (error) {
+    console.error("Something went wrong while deleting habits", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to delete habits",
+    });
+  }
+};
+
+export const getWheel = async (req, res) => {
+  const id_user = req.user.id;
+
+  try {
+    const result = await pool.query(
+      "SELECT * FROM wheel_of_life WHERE id_user = $1",
+      [id_user]
+    );
+    return res.status(200).json({
+      success: true,
+      message: "Get wheel",
+      wheel: result.rows,
+    });
+  } catch (err) {
+    return res.status(404).json({
+      success: false,
+      message: "Wheel not found",
+    });
+  }
+};
+
+export const updateWheel = async (req, res) => {
+  const id_user = req.user.id;
+
+  const { friends, health, fun, career, money, love, family, spirituality } =
+    req.body;
+  const date = new Date().toISOString();
+
+  try {
+    const result = await pool.query(
+      "UPDATE wheel_of_life SET date = $1, friends = $2, health = $3, fun = $4, career = $5, money = $6, love = $7, family = $8, spirituality = $9 WHERE id_user = $10 RETURNING *",
+      [
+        date,
+        friends,
+        health,
+        fun,
+        career,
+        money,
+        love,
+        family,
+        spirituality,
+        id_user,
+      ]
+    );
+
+    if (result.rowCount === 0) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Wheel updated successfully",
+      data: result.rows[0],
+    });
+  } catch (error) {
+    console.error("Error updating wheel:", error);
+    res
+      .status(500)
+      .json({ message: "Something went wrong while updating the wheel" });
+  }
+};
+
+export const createWheel = async (req, res) => {
+  const id_user = req.user.id;
+  const { friends, health, fun, career, money, love, family, spirituality } =
+    req.body;
+  const date = new Date().toISOString();
+  const id = crypto.randomUUID();
+  try {
+    await pool.query(
+      "INSERT INTO wheel_of_life (id,id_user, date, friends, health, fun, career, money, love, family, spirituality) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)",
+      [
+        id,
+        id_user,
+        date,
+        friends,
+        health,
+        fun,
+        career,
+        money,
+        love,
+        family,
+        spirituality,
+      ]
+    );
+    res.status(200).json({
+      success: true,
+      message: "Wheel created successfully",
+    });
+  } catch (err) {
+    console.error("Error details:", err);
+    res.status(404).json({
+      message: "Wheel not found",
+      success: false,
     });
   }
 };

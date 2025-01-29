@@ -19,3 +19,6 @@ export const addProgressRequest = (progress: ProgressData, id_goal: string) =>
 
 export const getProgressRequest = (id_goal: string) =>
   axios.get(`/goals/${id_goal}/progress`);
+
+export const deleteProgressRequest = (id_goal: string) =>
+  axios.delete(`/goals/${id_goal}/progress`);

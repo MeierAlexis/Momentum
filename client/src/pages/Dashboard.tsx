@@ -12,17 +12,16 @@ import { GoalData } from "../interfaces/GoalData.ts";
 import { ExpansibleCardInput } from "../components/ExpansibleCardInput.tsx";
 
 export function Dashboard() {
-  const { getGoals, updateGoal, deleteGoal, getHabits, deleteHabit } =
+  const { getGoals, updateGoal, deleteGoal, getHabits, deleteHabit, getWheel } =
     useGoalHabit();
-
-  const [goals, setGoals] = useState([]);
+  const [goals, setGoals] = useState<GoalData[]>([]);
   const [showForm, setShowForm] = useState(false);
+  const [wheel, setWheel] = useState<number[] | null>(null);
   const { user } = useAuth();
 
   const initialGoals = async () => {
     try {
       const goalsData = await getGoals();
-
       setGoals(goalsData.goals);
     } catch (error) {
       console.error("Error fetching goals:", error);
@@ -35,15 +34,16 @@ export function Dashboard() {
 
   const handleComplete = (goal: GoalData) => {
     try {
-      goal.state = true;
-      updateGoal(goal);
-      setGoals([...goals.filter((g) => g.id !== goal.id), goal]);
+      updateGoal({ ...goal, state: true });
+      setGoals((prevGoals) =>
+        prevGoals.map((g) => (g.id === goal.id ? { ...g, state: true } : g))
+      );
     } catch (error) {
       console.error("Error al actualizar la meta:", error);
     }
   };
-  const getActiveGoals = () => goals.filter((goal) => !goal.state);
 
+  const getActiveGoals = () => goals.filter((goal) => !goal.state);
   const getCompletedGoalsCount = () =>
     goals.filter((goal) => goal.state).length;
 
@@ -60,17 +60,13 @@ export function Dashboard() {
   const handleDelete = async (goalID: string) => {
     try {
       const res = await getHabits(goalID);
-      console.log(res);
-      const habits = res.habits;
-      console.log(habits);
-      for (const habit of habits) {
+      for (const habit of res.habits) {
         await deleteHabit(habit.id, goalID);
       }
-
       await deleteGoal(goalID);
-      setGoals(goals.filter((goal) => goal.id !== goalID));
+      setGoals((prevGoals) => prevGoals.filter((goal) => goal.id !== goalID));
     } catch (error) {
-      console.error("Error al obtener las metas:", error);
+      console.error("Error al eliminar la meta:", error);
     }
   };
 
@@ -95,9 +91,41 @@ export function Dashboard() {
     const year = date.getFullYear();
     return `${day} ${months[month]} ${year}`;
   };
+  useEffect(() => {
+    const fetchWheel = async () => {
+      try {
+        const wheelData = await getWheel();
+
+        const {
+          career,
+          family,
+          friends,
+          fun,
+          health,
+          love,
+          money,
+          spirituality,
+        } = wheelData.wheel[0];
+        const arrayWheelData = [
+          friends,
+          fun,
+          money,
+          family,
+          spirituality,
+          love,
+          career,
+          health,
+        ];
+        setWheel(arrayWheelData);
+      } catch (error) {
+        console.error("Error fetching wheel:", error);
+      }
+    };
+
+    fetchWheel();
+  }, []);
 
   const getDay = () => {
-    const date = new Date();
     const days = [
       "Sunday",
       "Monday",
@@ -107,7 +135,7 @@ export function Dashboard() {
       "Friday",
       "Saturday",
     ];
-    return days[date.getDay()];
+    return days[new Date().getDay()];
   };
 
   return (
@@ -150,9 +178,7 @@ export function Dashboard() {
           <div className="AnalyticsGrid">
             <div className="SquareDashboard ViewLastGoalUpdated">
               <h2>Last Goal Updated</h2>
-              <ul className="GoalList">
-                <p>No goals updated yet</p>
-              </ul>
+              <p>No goals updated yet</p>
             </div>
             <div className="SquareDashboard ViewCompletedGoals">
               <h2>Completed Goals</h2>
@@ -162,34 +188,30 @@ export function Dashboard() {
 
           <div className="SquareDashboard ViewActiveGoals">
             <h2>Active Goals</h2>
-            <ul className="GoalList">
-              <motion.div
-                layout
-                style={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  width: "100%",
-                  flexDirection: "column",
-
-                  justifyContent: "center",
-                }}
-              >
-                {getActiveGoals().length > 0 ? (
-                  getActiveGoals().map((goal) => (
-                    <ExpansibleCard
-                      key={goal.id}
-                      {...goal}
-                      id={goal.id}
-                      onComplete={() => handleComplete(goal)}
-                      style={{ width: "100%", textAlign: "left" }}
-                      onDelete={() => handleDelete(goal.id)}
-                    />
-                  ))
-                ) : (
-                  <p>No active goals</p>
-                )}
-              </motion.div>
-            </ul>
+            <motion.div
+              layout
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                width: "100%",
+                flexDirection: "column",
+                justifyContent: "center",
+              }}
+            >
+              {getActiveGoals().length > 0 ? (
+                getActiveGoals().map((goal) => (
+                  <ExpansibleCard
+                    key={goal.id}
+                    {...goal}
+                    id={goal.id}
+                    onComplete={() => handleComplete(goal)}
+                    onDelete={() => handleDelete(goal.id)}
+                  />
+                ))
+              ) : (
+                <p>No active goals</p>
+              )}
+            </motion.div>
           </div>
 
           <div className="SquareDashboard ViewWheelofLife">
@@ -208,8 +230,8 @@ export function Dashboard() {
                 ],
                 datasets: [
                   {
-                    label: "Life Balance",
-                    data: [0, 8, 5, 8, 0, 8, 5, 8],
+                    label: "Area",
+                    data: wheel ? wheel : [0, 0, 0, 0, 0, 0, 0, 0],
                     backgroundColor: "rgba(255, 87, 51, 0.2)",
                     borderColor: "#ff5733",
                     borderWidth: 3,
@@ -222,7 +244,7 @@ export function Dashboard() {
           <div className="SquareDashboard InspirationalQuote">
             <h2>Quote of the day</h2>
             <p>"{quote?.quote}"</p>
-            <span>-{quote?.author}</span>
+            <span>- {quote?.author}</span>
           </div>
         </div>
       </div>

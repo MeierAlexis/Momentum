@@ -13,3 +13,6 @@ export const deleteHabitRequest = (goalId: string, habitId: string) =>
 
 export const getHabitsRequest = (id: string) =>
   axios.get(`/goals/${id}/habits`);
+
+export const deleteHabitsRequest = (id_goal: string) =>
+  axios.delete(`/goals/${id_goal}/habits`);

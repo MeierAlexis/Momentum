@@ -16,3 +16,18 @@ export const getHabitsRequest = (id: string) =>
 
 export const deleteHabitsRequest = (id_goal: string) =>
   axios.delete(`/goals/${id_goal}/habits`);
+
+export const getTodayHabitsRequest = (goalId: string) =>
+  axios.get(`/goals/${goalId}/habits/today`);
+
+export const markHabitCompleteRequest = (goalId: string, habitId: string) =>
+  axios.post(`/goals/${goalId}/habits/${habitId}/complete`);
+
+export const markHabitFailRequest = (goalId: string, habitId: string) =>
+  axios.post(`/goals/${goalId}/habits/${habitId}/fail`);
+
+export const getStreakRequest = (userId: string) =>
+  axios.get(`/streak/${userId}`);
+
+export const getFailedHabitsRequest = (userId: string) =>
+  axios.get(`/failed-habits/${userId}`);

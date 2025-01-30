@@ -1,7 +1,12 @@
+import { SideBar } from "../components/SideBar";
+import "../styles/Help.css";
 export function Help() {
   return (
-    <div>
-      <h1>Help</h1>
+    <div className="Help">
+      <SideBar />
+      <div>
+        <h1>Help</h1>
+      </div>
     </div>
   );
 }

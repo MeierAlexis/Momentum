@@ -21,6 +21,11 @@ import {
   updateHabitRequest,
   deleteHabitRequest,
   deleteHabitsRequest,
+  getStreakRequest,
+  getFailedHabitsRequest,
+  markHabitCompleteRequest,
+  markHabitFailRequest,
+  getTodayHabitsRequest,
 } from "../api/habit.ts";
 
 import { GoalData } from "../interfaces/GoalData";
@@ -59,6 +64,11 @@ interface GoalHabitContextType {
   deleteHabit: (habitId: string, goalId: string) => Promise<void>;
   getHabits: (goalId: string) => Promise<HabitData[]>;
   deleteHabits: (goalId: string) => Promise<void>;
+  getTodayHabits: (goalId: string) => Promise<void>;
+  markHabitComplete: (goalId: string, habitId: string) => Promise<void>;
+  markHabitFailed: (goalId: string, habitId: string) => Promise<void>;
+  getStreak: (userId: string) => Promise<void>;
+  getFailedHabits: (userId: string) => Promise<void>;
 
   //Notes Functions
   createNote: (note: NoteData, id_goal: string) => Promise<void>;
@@ -161,6 +171,48 @@ export const GoalHabitProvider = ({
     }
   };
 
+  const getTodayHabits = async (goalId: string) => {
+    try {
+      const TodayHabits = await getTodayHabitsRequest(goalId);
+      console.log(TodayHabits);
+    } catch (error) {
+      console.error("Somenthing went wrong while fetching today habits", error);
+    }
+  };
+
+  const markHabitComplete = async (goalId: string, habitId: string) => {
+    try {
+      await markHabitCompleteRequest(goalId, habitId);
+    } catch (error) {
+      console.error("Something went wrong while mark habit completed", error);
+    }
+  };
+
+  const markHabitFailed = async (goalId: string, habitId: string) => {
+    try {
+      await markHabitFailRequest(goalId, habitId);
+    } catch (error) {
+      console.error("Something went wrong while mark habit failed", error);
+    }
+  };
+
+  const getStreak = async (userId: string) => {
+    try {
+      const res = getStreakRequest(userId);
+      console.log(res);
+    } catch (error) {
+      console.error("Something went wrong while fetching streak", error);
+    }
+  };
+
+  const getFailedHabits = async (userId: string) => {
+    try {
+      const res = getFailedHabitsRequest(userId);
+      console.log(res);
+    } catch (error) {
+      console.error("Something went wrong while getting failed habits", error);
+    }
+  };
   const getHabits = async (id: string) => {
     try {
       const res = await getHabitsRequest(id);
@@ -298,6 +350,11 @@ export const GoalHabitProvider = ({
         getGoal,
         getHabits,
         getNotes,
+        getTodayHabits,
+        getFailedHabits,
+        markHabitComplete,
+        getStreak,
+        markHabitFailed,
         createNote,
         deleteNote,
         createWheel,

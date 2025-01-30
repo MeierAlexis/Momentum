@@ -2,10 +2,10 @@ import "../styles/Dashboard.css";
 import { SideBar } from "../components/SideBar.tsx";
 import { CustomPieChart } from "../components/CustomPieChart.tsx";
 import { motion } from "framer-motion";
-import { DaylyQuotes } from "../../data/InitialData.tsx";
 import { useState, useEffect } from "react";
 import Button from "../components/Button.tsx";
 import { ExpansibleCard } from "../components/ExpansibleCard.tsx";
+import { DailyQuotes } from "../../data/InitialData.ts";
 import { useAuth } from "../context/AuthContext.tsx";
 import { useGoalHabit } from "../context/GoalHabitContext.tsx";
 import { GoalData } from "../interfaces/GoalData.ts";
@@ -53,7 +53,7 @@ export function Dashboard() {
 
   useEffect(() => {
     const randomQuote =
-      DaylyQuotes[Math.floor(Math.random() * DaylyQuotes.length)];
+      DailyQuotes[Math.floor(Math.random() * DailyQuotes.length)];
     setQuote(randomQuote);
   }, []);
 

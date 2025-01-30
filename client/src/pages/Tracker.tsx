@@ -4,7 +4,6 @@ import { ChartProgression } from "../components/ChartProgression";
 import { Habit } from "../components/Habit";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import { initialHabits } from "../../data/InitialData.tsx";
 import { ProgressBar } from "../components/ProgressBar.tsx";
 import { ComparativeChart } from "../components/ComparativeChart.tsx";
 import { useGoalHabit } from "../context/GoalHabitContext.tsx";
@@ -43,13 +42,8 @@ export function Tracker() {
   const [goals, setGoals] = useState([]);
   const [streak, setStreak] = useState(0);
   const [failedHabits, setFailedHabits] = useState(0);
-  const [weekView, setWeekView] = useState(true);
   const [habits, setHabits] = useState([]);
   const { getGoals, getHabits, updateHabit } = useGoalHabit();
-
-  const handleButtonClick = () => {
-    setWeekView(!weekView);
-  };
 
   const initialGoals = async () => {
     try {
@@ -145,12 +139,7 @@ export function Tracker() {
       <div className="TrackerAnalytics">
         <h2 className="TrackerTitle">Tracker</h2>
         <div className="SquareDashboard Progress">
-          <h2>{weekView ? "Weekly" : "Monthly"} Progress</h2>
-          <ChartProgression
-            data={weekView ? WeekData : MonthData}
-            onButtonClick={handleButtonClick}
-            view={weekView ? "Month" : "Week"}
-          />
+          <h2>Weekly Progress</h2>
         </div>
         <h2 className="TrackerTitle">Tracker Analytics</h2>
         <div className="TrackerDetail">

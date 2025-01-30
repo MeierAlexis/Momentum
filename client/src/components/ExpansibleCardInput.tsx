@@ -122,7 +122,6 @@ export function ExpansibleCardInput() {
         />
       )}
 
-      {/* Formulario */}
       <AnimatePresence>
         {isExpanded && (
           <motion.div
@@ -146,7 +145,6 @@ export function ExpansibleCardInput() {
                 className="formInput"
                 onSubmit={handleSubmit(handleSave)}
               >
-                {/* Inputs del formulario */}
                 <p>Title</p>
                 <input
                   type="text"

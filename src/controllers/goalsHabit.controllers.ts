@@ -304,6 +304,103 @@ export const deleteHabits = async (req, res) => {
   }
 };
 
+export const getTodayHabits = async (req, res) => {
+  const { id_goal } = req.params;
+  const today = new Date().toLocaleString("en-US", { weekday: "long" });
+
+  try {
+    const habits = await pool.query(
+      `SELECT * FROM habit 
+       WHERE id_goal = $1 
+       AND days LIKE $2`,
+      [id_goal, `%${today}%`]
+    );
+    res.status(200).json({
+      message: "Habits finded",
+      habits: habits.rows,
+    });
+  } catch (error) {
+    console.error("Something went wrong while fetching daily habits", error);
+  }
+};
+
+export const markHabitComplete = async (req, res) => {
+  const { id_habit } = req.params;
+  const id = crypto.randomUUID();
+  const date = new Date().toISOString().split("T")[0];
+  try {
+    await pool.query(
+      "INSERT INTO habit_log (id, id_habit, date, completed) VALUES ($1,$2,$3,$4) ON CONFLICT (id_habit,date) DO UPDATE SET completed = true ",
+      [id, id_habit, date, true]
+    );
+    res.status(200).json({
+      success: true,
+      message: "New habit completed",
+    });
+  } catch (error) {
+    console.error(
+      "Something went wrong while inserting a new habit completed",
+      error
+    );
+  }
+};
+
+export const markHabitFail = async (req, res) => {
+  const { id_habit } = req.params;
+  const id = crypto.randomUUID();
+  const date = new Date().toLocaleString("en");
+  try {
+    await pool.query(
+      "INSERT INTO habit_log(id, id_habit, date, completed) VALUES ($1,$2,$3,$4) ON CONFLICT (id_habit, date) DO UPDATE SET completed = false",
+      [id, id_habit, date, false]
+    );
+  } catch (error) {
+    console.error(
+      "Something went wrong while inserting a new habit failed",
+      error
+    );
+  }
+};
+
+export const getStreak = async (req, res) => {
+  const { id_user } = req.params;
+
+  try {
+    const streak = pool.query(
+      "SELECT COUNT (*) AS streak FROM ( SELECT date FROM habit_log WHERE id_habit IN (SELECT id FROM habit WHERE id_goal IN (SELECT id FROM goal WHERE id_user = $1)) GROUP BY date HAVING SUM (CASE WHEN completed = FALSE THEN 1 ELSE 0 END) = 0 ORDER BY date DESC LIMIT 100) as streak_days",
+      [id_user]
+    );
+    res.json({
+      success: true,
+      message: "Streak finded",
+      streak: streak.rows[0],
+    });
+  } catch (error) {
+    console.error("Something went wrong while fetching streak", error);
+  }
+};
+
+export const getFailedHabits = async (req, res) => {
+  const { id_user } = req.params;
+
+  try {
+    const failedHabits = pool.query(
+      `SELECT COUNT (*) as failed_habits FROM habit_log WHERE completed = FALSE AND id_habit IN (SELECT id FROM habit WHERE id_goal IN (SELECT id FROM goal WHERE id_user = $1))
+            AND date BETWEEN CURRENT_DATE - INTERVAL '7 days' AND CURRENT_DATE;
+        `,
+      [id_user]
+    );
+
+    res.status(200).json({
+      message: "Failed habits was sucessfully finded",
+      success: true,
+      failedHabits: failedHabits.rows[0],
+    });
+  } catch (error) {
+    console.error("Something went wrong while fetching failed habits", error);
+  }
+};
+
 export const getWheel = async (req, res) => {
   const id_user = req.user.id;
 

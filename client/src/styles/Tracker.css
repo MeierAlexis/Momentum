@@ -54,7 +54,12 @@
 .Tracker img {
   margin: 20px auto;
 }
-
+.ContainerDetailPerformance {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100%;
+}
 .TrackerDetail {
   display: flex;
   flex-direction: row;

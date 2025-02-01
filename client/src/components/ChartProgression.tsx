@@ -77,11 +77,7 @@ export const ChartProgression: React.FC<AreaChartExampleProps> = ({
             bottom: 5,
           }}
         >
-          <XAxis
-            dataKey="date"
-            tickMargin={10}
-            height={50} // Ajusta la altura para acomodar las etiquetas rotadas
-          />
+          <XAxis dataKey="date" tickMargin={10} height={50} />
           <YAxis tickMargin={10} />
           <Tooltip />
           <Area

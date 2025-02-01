@@ -20,11 +20,12 @@ import {
   getWheel,
   deleteHabits,
   deleteProgress,
-  markHabitComplete, // ✅ Nuevo controlador
-  markHabitFail, // ✅ Nuevo controlador
-  getStreak, // ✅ Nuevo controlador
-  getFailedHabits, // ✅ Nuevo controlador
-  getTodayHabits, // ✅ Ya estaba definido
+  markHabitComplete,
+  getStreak,
+  getFailedHabits,
+  getProgressLastWeekly,
+  getTodayHabits,
+  getProgressWeekly,
 } from "../controllers/goalsHabit.controllers.ts";
 import {
   getNotes,
@@ -54,15 +55,15 @@ router.put(
 );
 router.delete("/goals/:id/habits/:id_habit", authRequired, deleteHabitByGoal);
 router.delete("/goals/:id_goal/habits", authRequired, deleteHabits);
-router.get("/goals/:id_goal/habits/today", authRequired, getTodayHabits);
+router.get("/goals/:goalId/habits/today", authRequired, getTodayHabits);
+
 router.post(
-  "goals/:id_goal/habits/:habitId/complete",
+  "/goals/:id_goal/habits/:habitId/complete",
   authRequired,
   markHabitComplete
 );
-router.post("goals/:id_goal/habits/:habitId/fail", authRequired, markHabitFail);
-router.get("/streak/:id_user", authRequired, getStreak);
-router.get("/failed-habits/:id_user", authRequired, getFailedHabits);
+router.get("/streak/:userId", authRequired, getStreak);
+router.get("/failed-habits/:userId", authRequired, getFailedHabits);
 
 //wheel of life endpoints
 router.get("/wheel", authRequired, getWheel);
@@ -79,6 +80,12 @@ router.post(
 
 router.get("/goals/:id/progress", authRequired, getProgress);
 router.delete("/goals/:id/progress", authRequired, deleteProgress);
+router.get("/goals/progress/weekly/:userId", authRequired, getProgressWeekly);
+router.get(
+  "/goals/progress/last-weekly/:userId",
+  authRequired,
+  getProgressLastWeekly
+);
 
 // notes routes
 router.post("/goals/:id_goal/notes", authRequired, validateNote, createNote);

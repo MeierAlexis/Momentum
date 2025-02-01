@@ -26,10 +26,12 @@ import {
   markHabitCompleteRequest,
   markHabitFailRequest,
   getTodayHabitsRequest,
+  getLastWeeklyProgressRequest,
+  getWeeklyProgressRequest,
 } from "../api/habit.ts";
 
 import { GoalData } from "../interfaces/GoalData";
-import { ProgressData } from "../interfaces/ProgressData.ts";
+import { ProgressData, WeeklyProgress } from "../interfaces/ProgressData.ts";
 import { HabitData } from "../interfaces/HabitData";
 import { NoteData } from "../interfaces/NoteData.ts";
 import {
@@ -64,11 +66,11 @@ interface GoalHabitContextType {
   deleteHabit: (habitId: string, goalId: string) => Promise<void>;
   getHabits: (goalId: string) => Promise<HabitData[]>;
   deleteHabits: (goalId: string) => Promise<void>;
-  getTodayHabits: (goalId: string) => Promise<void>;
+  getTodayHabits: (goalId: string) => Promise<HabitData[]>;
   markHabitComplete: (goalId: string, habitId: string) => Promise<void>;
   markHabitFailed: (goalId: string, habitId: string) => Promise<void>;
-  getStreak: (userId: string) => Promise<void>;
-  getFailedHabits: (userId: string) => Promise<void>;
+  getStreak: (userId: string) => Promise<number>;
+  getFailedHabits: (userId: string) => Promise<number>;
 
   //Notes Functions
   createNote: (note: NoteData, id_goal: string) => Promise<void>;
@@ -81,6 +83,8 @@ interface GoalHabitContextType {
   addProgress(progress: ProgressData, id_goal: string): Promise<void>;
   getProgress(id_goal: string): Promise<ProgressData[]>;
   deleteProgress(id_goal: string): Promise<void>;
+  getProgressWeekly(userId: string): Promise<WeeklyProgress[]>;
+  getProgressLastWeekly(userId: string): Promise<WeeklyProgress[]>;
 
   // Wheel Functions
   createWheel: (wheel: WheelOfLifeData) => Promise<void>;
@@ -128,7 +132,6 @@ export const GoalHabitProvider = ({
   };
 
   const addGoal = async (goal: GoalData) => {
-    console.log(goal);
     goal.target = Number(goal.target);
 
     try {
@@ -140,7 +143,6 @@ export const GoalHabitProvider = ({
   };
 
   const updateGoal = async (goal: GoalData) => {
-    console.log(goal);
     try {
       const res = await updateGoalRequest(goal);
       setGoals(res.data);
@@ -153,8 +155,7 @@ export const GoalHabitProvider = ({
   };
   const deleteGoal = async (id: string) => {
     try {
-      const res = await deleteGoalRequest(id);
-      console.log(res.data);
+      await deleteGoalRequest(id);
       setGoals([...goals.filter((goal) => goal.id !== id)]);
     } catch (error) {
       console.log(error);
@@ -174,7 +175,8 @@ export const GoalHabitProvider = ({
   const getTodayHabits = async (goalId: string) => {
     try {
       const TodayHabits = await getTodayHabitsRequest(goalId);
-      console.log(TodayHabits);
+
+      return TodayHabits.data;
     } catch (error) {
       console.error("Somenthing went wrong while fetching today habits", error);
     }
@@ -199,7 +201,8 @@ export const GoalHabitProvider = ({
   const getStreak = async (userId: string) => {
     try {
       const res = getStreakRequest(userId);
-      console.log(res);
+
+      return res;
     } catch (error) {
       console.error("Something went wrong while fetching streak", error);
     }
@@ -208,7 +211,7 @@ export const GoalHabitProvider = ({
   const getFailedHabits = async (userId: string) => {
     try {
       const res = getFailedHabitsRequest(userId);
-      console.log(res);
+      return res;
     } catch (error) {
       console.error("Something went wrong while getting failed habits", error);
     }
@@ -224,7 +227,6 @@ export const GoalHabitProvider = ({
   };
 
   const updateHabit = async (habit: HabitData, goalId: string) => {
-    console.log(habit);
     try {
       const res = await updateHabitRequest(goalId, habit);
       setHabits(res.data);
@@ -272,11 +274,29 @@ export const GoalHabitProvider = ({
     }
   };
 
-  const createNote = async (note: NoteData, id_goal: string) => {
-    console.log(note, id_goal);
+  const getProgressWeekly = async (userId: string) => {
     try {
-      const res = await createNoteRequest(note, id_goal);
-      console.log(res);
+      const res = await getWeeklyProgressRequest(userId);
+
+      return res.data;
+    } catch (error) {
+      console.error("Something went wrong while fetching progress", error);
+    }
+  };
+
+  const getProgressLastWeekly = async (userId: string) => {
+    try {
+      const res = await getLastWeeklyProgressRequest(userId);
+
+      return res.data;
+    } catch (error) {
+      console.error("Something went wrong while fetching progress", error);
+    }
+  };
+
+  const createNote = async (note: NoteData, id_goal: string) => {
+    try {
+      await createNoteRequest(note, id_goal);
     } catch (error) {
       console.error("Something went wrong while creating note", error);
     }
@@ -326,8 +346,7 @@ export const GoalHabitProvider = ({
 
   const updateWheel = async (wheel: WheelOfLifeData) => {
     try {
-      const res = await updateWheelRequest(wheel);
-      console.log(res);
+      await updateWheelRequest(wheel);
     } catch (error) {
       console.error("Something went wrong while updating wheel", error);
     }
@@ -349,6 +368,7 @@ export const GoalHabitProvider = ({
         getGoals,
         getGoal,
         getHabits,
+        getProgressWeekly,
         getNotes,
         getTodayHabits,
         getFailedHabits,
@@ -356,6 +376,7 @@ export const GoalHabitProvider = ({
         getStreak,
         markHabitFailed,
         createNote,
+        getProgressLastWeekly,
         deleteNote,
         createWheel,
         getWheel,

@@ -73,7 +73,7 @@ export const createGoal = async (req, res) => {
 
 export const deleteGoal = async (req, res) => {
   const { id } = req.params;
-  console.log("Id:", id);
+
   try {
     await pool.query("DELETE FROM goal WHERE id = $1", [id]);
     res.status(200).json({
@@ -165,7 +165,6 @@ export const createHabit = async (req, res) => {
 
 export const deleteHabitByGoal = async (req, res) => {
   const { id: id_goal, id_habit } = req.params;
-  console.log("id_goal", id_goal, "id_habit", id_habit);
   try {
     const result = await pool.query(
       "DELETE FROM habit WHERE id_goal = $1 AND id = $2",
@@ -305,7 +304,7 @@ export const deleteHabits = async (req, res) => {
 };
 
 export const getTodayHabits = async (req, res) => {
-  const { id_goal } = req.params;
+  const { goalId } = req.params;
   const today = new Date().toLocaleString("en-US", { weekday: "long" });
 
   try {
@@ -313,8 +312,9 @@ export const getTodayHabits = async (req, res) => {
       `SELECT * FROM habit 
        WHERE id_goal = $1 
        AND days LIKE $2`,
-      [id_goal, `%${today}%`]
+      [goalId, `%${today}%`]
     );
+
     res.status(200).json({
       message: "Habits finded",
       habits: habits.rows,
@@ -325,13 +325,13 @@ export const getTodayHabits = async (req, res) => {
 };
 
 export const markHabitComplete = async (req, res) => {
-  const { id_habit } = req.params;
+  const { habitId } = req.params;
   const id = crypto.randomUUID();
   const date = new Date().toISOString().split("T")[0];
   try {
     await pool.query(
-      "INSERT INTO habit_log (id, id_habit, date, completed) VALUES ($1,$2,$3,$4) ON CONFLICT (id_habit,date) DO UPDATE SET completed = true ",
-      [id, id_habit, date, true]
+      "INSERT INTO habit_log (id, id_habit, date, completed) VALUES ($1,$2,$3,$4) ",
+      [id, habitId, date, true]
     );
     res.status(200).json({
       success: true,
@@ -345,14 +345,90 @@ export const markHabitComplete = async (req, res) => {
   }
 };
 
-export const markHabitFail = async (req, res) => {
-  const { id_habit } = req.params;
+export const getProgressWeekly = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const result = await pool.query(
+      `SELECT * FROM habits_completed WHERE id_user = $1 ORDER BY date DESC LIMIT 7;
+      `,
+      [userId]
+    );
+    return res.status(200).json({
+      message: "Get progress weekly",
+      success: true,
+      progress: result.rows,
+    });
+  } catch (error) {
+    console.error("Something went wrong while fetching progress weekly", error);
+  }
+};
+
+export const getProgressLastWeekly = async (req, res) => {
+  const { userId } = req.params;
+
+  // Obtener la fecha actual
+  const currentDate = new Date();
+
+  // Calcular la fecha de hace 7 días
+  const sevenDaysAgo = new Date(currentDate);
+  sevenDaysAgo.setDate(currentDate.getDate() - 7);
+  const sevenDaysAgoString = sevenDaysAgo.toISOString().split("T")[0];
+  console.log("sevenDaysAgoString", sevenDaysAgoString);
+
+  try {
+    const result = await pool.query(
+      `SELECT * FROM habits_completed 
+       WHERE id_user = $1 
+       AND date >= $2 
+       ORDER BY date ASC LIMIT 7;`,
+      [userId, sevenDaysAgoString]
+    );
+
+    return res.status(200).json({
+      message: "Get progress last weekly",
+      success: true,
+      progress: result.rows,
+    });
+  } catch (error) {
+    console.error(
+      "Something went wrong while fetching progress last weekly",
+      error
+    );
+  }
+};
+
+export const updateHabitsCompleted = async (id_user: string) => {
+  try {
+    const id = crypto.randomUUID();
+    const date = new Date().toISOString().split("T")[0];
+    console.log("Date:", date);
+    const completed = await pool.query(
+      `SELECT COUNT(*) FROM habit_log WHERE completed = TRUE AND date = $1`,
+      [date]
+    );
+    const completedCount = completed.rows[0].count;
+    console.log("Completed count:", completed.rows[0].count);
+
+    await pool.query(
+      `
+      INSERT INTO habits_completed (id, id_user, date, total_completed)
+      VALUES ($1,$2,$3,$4);
+    `,
+      [id, id_user, date, completedCount]
+    );
+  } catch (error) {
+    console.error("Error updating habits_completed:", error);
+  }
+};
+
+export const markHabitFail = async (habitId: string) => {
   const id = crypto.randomUUID();
   const date = new Date().toLocaleString("en");
   try {
     await pool.query(
-      "INSERT INTO habit_log(id, id_habit, date, completed) VALUES ($1,$2,$3,$4) ON CONFLICT (id_habit, date) DO UPDATE SET completed = false",
-      [id, id_habit, date, false]
+      "INSERT INTO habit_log(id, id_habit, date, completed) VALUES ($1,$2,$3,$4) ",
+      [id, habitId, date, false]
     );
   } catch (error) {
     console.error(
@@ -363,32 +439,62 @@ export const markHabitFail = async (req, res) => {
 };
 
 export const getStreak = async (req, res) => {
-  const { id_user } = req.params;
+  const { userId } = req.params;
 
   try {
-    const streak = pool.query(
-      "SELECT COUNT (*) AS streak FROM ( SELECT date FROM habit_log WHERE id_habit IN (SELECT id FROM habit WHERE id_goal IN (SELECT id FROM goal WHERE id_user = $1)) GROUP BY date HAVING SUM (CASE WHEN completed = FALSE THEN 1 ELSE 0 END) = 0 ORDER BY date DESC LIMIT 100) as streak_days",
-      [id_user]
+    const result = await pool.query(
+      `
+      WITH RECURSIVE 
+        -- Obtener todas las fechas únicas donde el usuario completó hábitos
+        dates AS (
+          SELECT DISTINCT hl.date
+          FROM habit_log hl
+          JOIN habit h ON hl.id_habit = h.id
+          JOIN goal g ON h.id_goal = g.id
+          WHERE g.id_user = $1 AND hl.completed = TRUE
+        ),
+        -- Encontrar la fecha más reciente
+        latest_date AS (
+          SELECT MAX(date) AS date FROM dates
+        ),
+        -- Calcular la racha actual de forma recursiva
+        streak AS (
+          SELECT date, 1 AS count
+          FROM latest_date
+          UNION ALL
+          SELECT d.date, s.count + 1
+          FROM streak s
+          JOIN dates d ON d.date = s.date - INTERVAL '1 day'
+        )
+      -- Retornar la racha máxima encontrada (0 si no hay datos)
+      SELECT COALESCE(MAX(count), 0) AS streak FROM streak
+      `,
+      [userId]
     );
-    res.json({
+
+    res.status(200).json({
       success: true,
-      message: "Streak finded",
-      streak: streak.rows[0],
+      message: "Current streak calculated",
+      streak: result.rows[0].streak,
     });
   } catch (error) {
-    console.error("Something went wrong while fetching streak", error);
+    console.error("Error fetching streak:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
   }
 };
 
 export const getFailedHabits = async (req, res) => {
-  const { id_user } = req.params;
+  const { userId } = req.params;
 
   try {
-    const failedHabits = pool.query(
+    const failedHabits = await pool.query(
       `SELECT COUNT (*) as failed_habits FROM habit_log WHERE completed = FALSE AND id_habit IN (SELECT id FROM habit WHERE id_goal IN (SELECT id FROM goal WHERE id_user = $1))
             AND date BETWEEN CURRENT_DATE - INTERVAL '7 days' AND CURRENT_DATE;
         `,
-      [id_user]
+      [userId]
     );
 
     res.status(200).json({

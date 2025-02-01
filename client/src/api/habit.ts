@@ -31,3 +31,9 @@ export const getStreakRequest = (userId: string) =>
 
 export const getFailedHabitsRequest = (userId: string) =>
   axios.get(`/failed-habits/${userId}`);
+
+export const getWeeklyProgressRequest = (userId: string) =>
+  axios.get(`/goals/progress/weekly/${userId}`);
+
+export const getLastWeeklyProgressRequest = (userId: string) =>
+  axios.get(`/goals/progress/last-weekly/${userId}`);

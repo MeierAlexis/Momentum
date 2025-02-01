@@ -216,8 +216,8 @@ export function Tracker() {
           <div className="SquareDashboard ComparativeChart">
             <h2>Current vs Previous</h2>
             <ComparativeChart
-              dataCurrentMonth={progressWeek}
-              dataPreviousMonth={lastWeek}
+              dataCurrentWeek={progressWeek}
+              dataPreviousWeek={lastWeek}
             />
           </div>
 

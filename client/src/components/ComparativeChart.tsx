@@ -9,71 +9,65 @@ import {
 } from "recharts";
 
 type DataPoint = {
-  date: string;
+  date: string; // Mantén el formato original (YYYY-MM-DD)
   completed: number;
 };
 
 interface PropsComparativeChart {
-  dataCurrentMonth: DataPoint[];
-  dataPreviousMonth: DataPoint[];
+  dataCurrentWeek: DataPoint[];
+  dataPreviousWeek: DataPoint[];
 }
 
-const formatDate = (dateString: string) => {
-  const date = new Date(dateString);
-  const day = date.getDate();
-  const month = date.toLocaleString("default", { month: "short" }); // Nombre abreviado del mes
-  const year = date.getFullYear();
-  return `${day} ${month} ${year}`;
-};
+// Formatea la fecha como "Day 1", "Day 2", ..., "Day 7"
+const formatDate = (index: number) => `Day ${index + 1}`;
 
 export function ComparativeChart(props: PropsComparativeChart) {
-  const [formattedCurrentMonth, setFormattedCurrentMonth] = useState<
-    DataPoint[]
-  >([]);
-  const [formattedPreviousMonth, setFormattedPreviousMonth] = useState<
-    DataPoint[]
-  >([]);
+  const [mergedData, setMergedData] = useState<any[]>([]);
 
   useEffect(() => {
-    // Formatear los datos del mes actual
-    const formattedCurrent = props.dataCurrentMonth.map((item) => ({
-      ...item,
-      date: formatDate(item.date),
-    }));
-    setFormattedCurrentMonth(formattedCurrent);
+    // Ordenar los datos por fecha
+    const sortedCurrent = [...props.dataCurrentWeek].sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+    );
 
-    // Formatear los datos del mes anterior
-    const formattedPrevious = props.dataPreviousMonth.map((item) => ({
-      ...item,
-      date: formatDate(item.date),
+    const sortedPrevious = [...props.dataPreviousWeek].sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+    );
+
+    // Construir el dataset unificado
+    const merged: any[] = Array.from({ length: 7 }, (_, i) => ({
+      date: formatDate(i),
+      currentWeek: sortedCurrent[i]?.completed || 0,
+      previousWeek: sortedPrevious[i]?.completed || 0,
     }));
-    setFormattedPreviousMonth(formattedPrevious);
-  }, [props.dataCurrentMonth, props.dataPreviousMonth]);
+
+    setMergedData(merged);
+  }, [props.dataCurrentWeek, props.dataPreviousWeek]);
 
   return (
     <div style={{ width: "100%", height: 250, position: "relative" }}>
       <ResponsiveContainer>
-        <AreaChart>
-          {/* Eje X y Y comunes para ambos conjuntos de datos */}
+        <AreaChart data={mergedData}>
           <XAxis dataKey="date" tickMargin={10} />
           <YAxis tickMargin={10} />
-          <Tooltip />
+          <Tooltip
+            formatter={(value: number) => value}
+            labelFormatter={(label: string) => label}
+          />
 
-          {/* Área para el mes actual */}
+          {/* Área para la semana actual */}
           <Area
             type="monotone"
-            data={formattedCurrentMonth}
-            dataKey="completed"
+            dataKey="currentWeek"
             stroke="#ff5733"
             fill="rgba(255,87,51,0.3)"
             strokeWidth={2}
           />
 
-          {/* Área para el mes anterior */}
+          {/* Área para la semana anterior */}
           <Area
             type="monotone"
-            data={formattedPreviousMonth}
-            dataKey="completed"
+            dataKey="previousWeek"
             stroke="#4287f5"
             fill="rgba(66,135,245,0.3)"
             strokeWidth={2}

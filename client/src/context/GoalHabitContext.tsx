@@ -28,10 +28,16 @@ import {
   getTodayHabitsRequest,
   getLastWeeklyProgressRequest,
   getWeeklyProgressRequest,
+  deleteHabitLogRequest,
+  getHabitLogRequest,
 } from "../api/habit.ts";
 
 import { GoalData } from "../interfaces/GoalData";
-import { ProgressData, WeeklyProgress } from "../interfaces/ProgressData.ts";
+import {
+  ProgressData,
+  WeeklyProgress,
+  HabitLog,
+} from "../interfaces/ProgressData.ts";
 import { HabitData } from "../interfaces/HabitData";
 import { NoteData } from "../interfaces/NoteData.ts";
 import {
@@ -71,6 +77,8 @@ interface GoalHabitContextType {
   markHabitFailed: (goalId: string, habitId: string) => Promise<void>;
   getStreak: (userId: string) => Promise<number>;
   getFailedHabits: (userId: string) => Promise<number>;
+  deleteHabitLog: (habitId: string, goalId: string) => Promise<HabitLog[]>;
+  getHabitLog: (habitId: string, goalId: string) => Promise<boolean>;
 
   //Notes Functions
   createNote: (note: NoteData, id_goal: string) => Promise<void>;
@@ -214,6 +222,22 @@ export const GoalHabitProvider = ({
       return res;
     } catch (error) {
       console.error("Something went wrong while getting failed habits", error);
+    }
+  };
+  const deleteHabitLog = async (habitId: string, goalId: string) => {
+    try {
+      await deleteHabitLogRequest(habitId, goalId);
+    } catch (error) {
+      console.error("Something went wrong while deleting habit log", error);
+    }
+  };
+
+  const getHabitLog = async (habitId: string, goalId: string) => {
+    try {
+      const res = await getHabitLogRequest(habitId, goalId);
+      return res.data;
+    } catch (error) {
+      console.error("Something went wrong while fetching habit log", error);
     }
   };
   const getHabits = async (id: string) => {
@@ -372,8 +396,10 @@ export const GoalHabitProvider = ({
         getNotes,
         getTodayHabits,
         getFailedHabits,
+        deleteHabitLog,
         markHabitComplete,
         getStreak,
+        getHabitLog,
         markHabitFailed,
         createNote,
         getProgressLastWeekly,

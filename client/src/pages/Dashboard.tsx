@@ -10,13 +10,24 @@ import { useAuth } from "../context/AuthContext.tsx";
 import { useGoalHabit } from "../context/GoalHabitContext.tsx";
 import { GoalData } from "../interfaces/GoalData.ts";
 import { ExpansibleCardInput } from "../components/ExpansibleCardInput.tsx";
+import { HabitData } from "../interfaces/HabitData.ts";
 
 export function Dashboard() {
-  const { getGoals, updateGoal, deleteGoal, getHabits, deleteHabit, getWheel } =
-    useGoalHabit();
+  const {
+    getGoals,
+    updateGoal,
+    deleteGoal,
+    getHabits,
+    deleteHabit,
+    getWheel,
+    deleteProgress,
+    deleteHabitLog,
+    deleteNotes,
+  } = useGoalHabit();
   const [goals, setGoals] = useState<GoalData[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [wheel, setWheel] = useState<number[] | null>(null);
+  const [habits, setHabits] = useState<HabitData[]>([]);
   const { user } = useAuth();
 
   const initialGoals = async () => {
@@ -60,11 +71,27 @@ export function Dashboard() {
   const handleDelete = async (goalID: string) => {
     try {
       const res = await getHabits(goalID);
-      for (const habit of res.habits) {
-        await deleteHabit(habit.id, goalID);
+      const habitsToDelete = res.habits;
+
+      for (const habit of habitsToDelete) {
+        // Verificar si existen registros en habit_log antes de eliminarlos
+        const habitLogExists = await getHabitLog(habit.id, goalID);
+
+        if (habitLogExists) {
+          await deleteHabitLog(habit.id, goalID);
+        }
+        await deleteHabit(habit.id, goalID); // Eliminar el hábito después de sus logs
       }
-      await deleteGoal(goalID);
+
+      await deleteProgress(goalID);
+      await deleteNotes(goalID);
+      await deleteGoal(goalID); // Eliminar la meta al final
+
+      // Actualizar el estado eliminando la meta y sus dependencias del estado global
       setGoals((prevGoals) => prevGoals.filter((goal) => goal.id !== goalID));
+      setHabits((prevHabits) =>
+        prevHabits.filter((habit) => habit.id_goal !== goalID)
+      );
     } catch (error) {
       console.error("Error al eliminar la meta:", error);
     }

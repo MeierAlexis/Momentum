@@ -7,7 +7,10 @@ import {
   faInstagram,
   faLinkedin,
 } from "@fortawesome/free-brands-svg-icons";
+import { useNavigate } from "react-router";
+
 export default function SectionFooter() {
+  const navigate = useNavigate();
   return (
     <footer className="footer">
       <div className="containerFooter2">
@@ -20,7 +23,12 @@ export default function SectionFooter() {
               style={{ filter: "invert(1)", width: "250px", height: "60px" }}
             />
           </div>
-          <Button text="Try Momentum" color1="#FF5733" color2="#FF1044" />
+          <Button
+            text="Try Momentum"
+            color1="#FF5733"
+            color2="#FF1044"
+            onClick={() => navigate("/register")}
+          />
           <div className="socialLinks">
             <FontAwesomeIcon
               icon={faFacebook}

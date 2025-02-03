@@ -15,11 +15,14 @@ import { NoteData } from "../interfaces/NoteData.ts";
 import { AddProgressForm } from "../components/AddProgressForm.tsx";
 import confetti from "canvas-confetti";
 import { WheelOfLifeForm } from "../components/WheelOfLifeForm.tsx";
+import { HabitData } from "../interfaces/HabitData.ts";
 
 export function Goals() {
   const [updates, setUpdates] = useState<ProgressData[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [showFormNotes, setShowFormNotes] = useState(false);
+  const [habitsDelete, setHabitsDelete] = useState<HabitData[]>([]);
+  const [habits, setHabits] = useState<HabitData[]>([]);
   const [goals, setGoals] = useState<GoalData[]>([]);
   const [notes, setNotes] = useState<NoteData[]>([]);
   const [selectedGoalId, setSelectedGoalId] = useState<string | null>(null);
@@ -37,6 +40,9 @@ export function Goals() {
     deleteHabits,
     deleteProgress,
     deleteNotes,
+    deleteHabitLog,
+    getHabitLog,
+    getHabits,
   } = useGoalHabit();
 
   const [showFormWheel, setShowFormWheel] = useState(false);
@@ -149,10 +155,23 @@ export function Goals() {
 
   const handleDelete = async (goalID: string) => {
     try {
+      const res = await getHabits(goalID);
+      const habitsToDelete = res.habits;
+
+      for (const habit of habitsToDelete) {
+        // Verificar si existen registros en habit_log antes de eliminarlos
+        const habitLogCount = await getHabitLog(habit.id, goalID);
+
+        if (habitLogCount) {
+          await deleteHabitLog(habit.id, goalID);
+        }
+      }
+
       await deleteHabits(goalID);
       await deleteProgress(goalID);
       await deleteNotes(goalID);
       await deleteGoal(goalID);
+
       setGoals((prevGoals) => prevGoals.filter((goal) => goal.id !== goalID));
       setHabits((prevHabits) =>
         prevHabits.filter((habit) => habit.id_goal !== goalID)

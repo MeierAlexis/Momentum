@@ -33,6 +33,48 @@ export const getGoals = async (req, res) => {
   }
 };
 
+export const deleteHabitLogRequest = async (req, res) => {
+  const { habitId } = req.params;
+
+  try {
+    await pool.query("DELETE FROM habit_log WHERE id_habit = $1", [habitId]);
+    res.status(200).json({
+      success: true,
+      message: "Habit deleted successfully",
+    });
+  } catch (err) {
+    console.error("Error details:", err);
+    res.status(500).json({
+      message: "An error occurred while deleting the habit",
+      success: false,
+      error: err,
+    });
+  }
+};
+
+export const getHabitLog = async (req, res) => {
+  const { habitId } = req.params;
+
+  try {
+    const result = await pool.query(
+      "SELECT * FROM habit_log WHERE id_habit = $1",
+      [habitId]
+    );
+    res.status(200).json({
+      success: true,
+      message: "Get habit log",
+      habitLog: result.rows,
+    });
+  } catch (err) {
+    console.error("Error details:", err);
+    res.status(404).json({
+      message: "Habit log not found",
+      success: false,
+      error: err,
+    });
+  }
+};
+
 export const createGoal = async (req, res) => {
   const { title, description, start_date, end_date, target }: GoalData =
     req.body;

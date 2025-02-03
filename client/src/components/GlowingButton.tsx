@@ -1,12 +1,20 @@
+import { useNavigate } from "react-router";
 import "../styles/GlowingButton.css";
 
 interface ButtonProps {
   text: string;
 }
 
-function GlowingButton(props: ButtonProps) {
-  const { text } = props;
-  return <button className="glowing-button">{text}</button>;
+function GlowingButton({ text }: ButtonProps) {
+  const navigate = useNavigate();
+  const onClick = () => {
+    navigate("/register");
+  };
+  return (
+    <button className="glowing-button" onClick={onClick}>
+      {text}
+    </button>
+  );
 }
 
 export default GlowingButton;

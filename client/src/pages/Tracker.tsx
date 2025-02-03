@@ -10,7 +10,6 @@ import { ComparativeChart } from "../components/ComparativeChart.tsx";
 import { useGoalHabit } from "../context/GoalHabitContext.tsx";
 import { HabitData } from "../interfaces/HabitData.ts";
 import { useAuth } from "../context/AuthContext.tsx";
-import { getProgressRequest } from "../api/goal.ts";
 
 export function Tracker() {
   const [goals, setGoals] = useState([]);

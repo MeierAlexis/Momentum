@@ -3,7 +3,7 @@ import Lottie from "react-lottie-player";
 import { useState } from "react";
 import animationData from "../../public/New-Year.json";
 import GlowingButton from "./GlowingButton";
-
+import { useNavigate } from "react-router";
 function SectionHome() {
   const [isStopped, setIsStopped] = useState(false);
 

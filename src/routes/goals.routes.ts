@@ -26,6 +26,8 @@ import {
   getProgressLastWeekly,
   getTodayHabits,
   getProgressWeekly,
+  deleteHabitLogRequest,
+  getHabitLog,
 } from "../controllers/goalsHabit.controllers.ts";
 import {
   getNotes,
@@ -64,7 +66,12 @@ router.post(
 );
 router.get("/streak/:userId", authRequired, getStreak);
 router.get("/failed-habits/:userId", authRequired, getFailedHabits);
-
+router.delete(
+  "/goals/:goalId/habits/:habitId/delete",
+  authRequired,
+  deleteHabitLogRequest
+);
+router.get("/goals/:goalId/habits/:habitId/log", authRequired, getHabitLog);
 //wheel of life endpoints
 router.get("/wheel", authRequired, getWheel);
 router.post("/wheel", authRequired, createWheel);

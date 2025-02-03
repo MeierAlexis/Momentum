@@ -37,3 +37,10 @@ export const getWeeklyProgressRequest = (userId: string) =>
 
 export const getLastWeeklyProgressRequest = (userId: string) =>
   axios.get(`/goals/progress/last-weekly/${userId}`);
+
+export const deleteHabitLogRequest = (habitId: string, goalId: string) =>
+  axios.delete(`/
+goals/${goalId}/habits/${habitId}/delete`);
+
+export const getHabitLogRequest = (habitId: string, goalId: string) =>
+  axios.get(`/goals/${goalId}/habits/${habitId}/log`);

@@ -82,7 +82,7 @@ CREATE TABLE habit_log (
 
     CONSTRAINT fk_habit_log FOREIGN KEY (id_habit) REFERENCES habit(id)
 );
-
+    
 CREATE TABLE habits_completed (
     id CHAR(36) PRIMARY KEY,
     id_user CHAR(36) NOT NULL,       

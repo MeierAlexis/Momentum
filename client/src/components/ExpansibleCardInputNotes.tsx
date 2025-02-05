@@ -55,7 +55,7 @@ export function ExpansibleCardInputNotes() {
   const handleSave = async (data: NoteData) => {
     try {
       const res = await createNote(data, selectedGoalId);
-      console.log(res);
+
       setIsExpanded(false);
     } catch (error) {
       console.error("Something went wrong while creating the goal:", error);

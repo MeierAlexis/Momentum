@@ -416,7 +416,6 @@ export const getProgressLastWeekly = async (req, res) => {
   const sevenDaysAgo = new Date(currentDate);
   sevenDaysAgo.setDate(currentDate.getDate() - 7);
   const sevenDaysAgoString = sevenDaysAgo.toISOString().split("T")[0];
-  console.log("sevenDaysAgoString", sevenDaysAgoString);
 
   try {
     const result = await pool.query(
@@ -444,13 +443,12 @@ export const updateHabitsCompleted = async (id_user: string) => {
   try {
     const id = crypto.randomUUID();
     const date = new Date().toISOString().split("T")[0];
-    console.log("Date:", date);
+
     const completed = await pool.query(
       `SELECT COUNT(*) FROM habit_log WHERE completed = TRUE AND date = $1`,
       [date]
     );
     const completedCount = completed.rows[0].count;
-    console.log("Completed count:", completed.rows[0].count);
 
     await pool.query(
       `

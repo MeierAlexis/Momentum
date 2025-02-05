@@ -15,6 +15,7 @@ interface PricingCardProps {
   BorderColor?: string;
   isPopular?: boolean;
   boxShadow?: string;
+  onClick?: () => void;
 }
 
 function PricingCard(props: PricingCardProps) {
@@ -47,6 +48,7 @@ function PricingCard(props: PricingCardProps) {
           text="Get Started"
           color1={props.color1}
           color2={props.color2}
+          onClick={props.onClick}
         />
       </div>
       <div className="pricing-card-container-features">

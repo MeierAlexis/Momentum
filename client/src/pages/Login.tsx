@@ -73,41 +73,6 @@ export default function Login() {
             />
           </div>
           <Button text="Log In" color1="#FF5733" color2="#FF1044" />
-          <div className="separator">Or continue with</div>
-          <div className="buttonsLogin">
-            <Button
-              color1="#fff"
-              color2="#fff"
-              colorText="#111"
-              srcsvg="/google-icon.svg"
-              text="Google"
-              width="150px"
-            />
-            <Button
-              color1="#fff"
-              color2="#fff"
-              colorText="#111"
-              srcsvg="/apple-logo.svg"
-              text="Apple"
-              width="150px"
-            />
-            <Button
-              color1="#fff"
-              color2="#fff"
-              colorText="#111"
-              srcsvg="/microsoft-logo.svg"
-              width="150px"
-              text="Microsoft"
-            />
-            <Button
-              color1="#fff"
-              color2="#fff"
-              colorText="#111"
-              srcsvg="/slack-logo.svg"
-              width="150px"
-              text="Slack"
-            />
-          </div>
         </form>
         <p>
           Don't have an account?{" "}

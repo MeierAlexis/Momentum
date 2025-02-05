@@ -3,8 +3,6 @@ import { goalSchema } from "../schemas/goalSchema.ts";
 
 export const validationGoal = (req, res, next) => {
   try {
-    console.log("Llegue a la validacion");
-    // Validar el cuerpo de la solicitud
     goalSchema.parse(req.body);
     next();
   } catch (error) {

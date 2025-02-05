@@ -48,16 +48,17 @@
 .formLogin {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 20px;
   padding: 20px;
   align-items: center;
   justify-content: center;
   color: #fff;
-
+  height: 60%;
   border-radius: 20px;
   max-width: 80%;
   width: 40%;
   padding: 40px;
+
   border: 1px solid #fff;
   align-items: center;
   justify-content: center;

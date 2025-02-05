@@ -23,7 +23,6 @@ export const validateRegister = (req, res, next) => {
 
 export const validateLogin = (req, res, next) => {
   try {
-    console.log(req.body);
     // Validate body request
     loginSchema.parse(req.body);
     next(); // If valid, proceed to the next middleware

@@ -45,8 +45,6 @@ export const scheduleDailyReset = () => {
           await updateHabitsCompleted(user.id);
         }
       }
-
-      console.log("CRON job ejecutado exitosamente");
     } catch (error) {
       console.error("Error en CRON job:", error);
     }

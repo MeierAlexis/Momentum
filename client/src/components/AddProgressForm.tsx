@@ -26,7 +26,7 @@ export function AddProgressForm({
       id_goal: selectedGoalId || "",
       progress,
     };
-    console.log(progressData);
+
     if (selectedGoalId && progress > 0) {
       await addProgress(progressData, selectedGoalId);
       setProgress(0);

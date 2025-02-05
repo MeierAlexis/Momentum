@@ -1,16 +1,22 @@
 import "../styles/Section-Pricing.css";
 import PricingCard from "../components/Princing-Card";
+import { usePayment } from "../context/PaymentContext";
 
 function SectionPricing() {
+  const {
+    createPaymentBasicPlan,
+    createPaymentPremiumPlan,
+    createPaymentProPlan,
+  } = usePayment();
   return (
     <div className="section-pricing" id="Pricing">
       <h1 className="title">Simple Pricing Plans</h1>
       <div className="cards-container">
         |
         <PricingCard
-          title="Free"
+          title="Basic Plan"
           text=" Get started with Momentum and explore the core features to see how it fits your goals."
-          price="$0"
+          price="$10"
           features={[
             "Limited Access",
             "Up to 3 active goals",
@@ -19,10 +25,11 @@ function SectionPricing() {
           ]}
           color1="#FF5733"
           color2="#FF1044"
+          onClick={createPaymentBasicPlan}
         />
         |
         <PricingCard
-          title="Basic Plan"
+          title="Pro Plan"
           text="Unlock additional tools and enjoy more features for a smooth goal-setting experience."
           price="$30"
           features={[
@@ -41,6 +48,7 @@ function SectionPricing() {
           color2="#FF1044"
           isPopular
           boxShadow="0 0 10px #FF5733, 0 0 15px #FF5733, 0 0 30px #FF5733"
+          onClick={createPaymentProPlan}
         />
         |
         <PricingCard
@@ -56,6 +64,7 @@ function SectionPricing() {
           ]}
           color1="#FF5733"
           color2="#FF1044"
+          onClick={createPaymentPremiumPlan}
         />
       </div>
     </div>
